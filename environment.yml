@@ -1,0 +1,12 @@
+name: env_vi
+channels:
+  - terradue
+  - conda-forge
+dependencies:
+  - python=3.7
+  - pystac=0.3.3 
+  - gdal 
+  - numpy
+  - shapely
+  - click
+

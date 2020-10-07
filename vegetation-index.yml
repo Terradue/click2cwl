@@ -1,0 +1,4 @@
+aoi: 'POLYGON((136.508 -36.108,136.508 -35.654,137.178 -35.654,137.178 -36.108,136.508 -36.108))'
+input_reference:
+- class: Directory
+  path: file:///workspace/data/pippo2
