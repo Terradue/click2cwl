@@ -1,5 +1,5 @@
 def dockerTag = 'terradue/eoepca-vegetation-index'
-def dockerNewVersion = 1.0
+def dockerNewVersion = 1.1
 
 pipeline {
     agent any
