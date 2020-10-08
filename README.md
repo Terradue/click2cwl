@@ -1,5 +1,7 @@
 ## EOEPCA - Vegetation index
 
+[![Build Status](https://travis-ci.com/EOEPCA/app-vegetation-index.svg?branch=master)](https://travis-ci.com/EOEPCA/app-vegetation-index)
+
 ### About this application
 
 This is a simple application used as an artifact for testing EOEPCA release 0.2
