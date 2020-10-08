@@ -31,7 +31,9 @@ def get_item(catalog):
 
 def get_assets(item):
     
-    for index, band in enumerate(item.bands):
+    eo_item = extensions.eo.EOItemExt(item)
+    
+    for index, band in enumerate(eo_item.bands):
    
         if band.common_name in ['swir16']:
 

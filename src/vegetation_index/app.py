@@ -4,7 +4,7 @@ import gdal
 import numpy as np
 import logging
 import click
-from pystac import Catalog, Collection, EOItem, MediaType, EOAsset, CatalogType
+from pystac import *
 from shapely.wkt import loads
 from time import sleep
 from .helpers import get_item, cog, set_env, get_assets, normalized_difference
@@ -139,15 +139,25 @@ def main(input_reference, aoi):
     
     item_name = 'INDEX_{}'.format(item.id)
     
-    result_item = EOItem(id=item_name,
-                         geometry=item.geometry,
-                         bbox=item.bbox,
-                         datetime=item.datetime,
-                         properties={},
-                         bands=bands,
-                         gsd=10, 
-                         platform=item.platform, 
-                         instrument=item.instrument)
+    
+     
+    result_item = Item(id=item.id,
+                       geometry=item.geometry,
+                       bbox=item.bbox,
+                       datetime=item.datetime,
+                       properties=item.properties)
+    
+    eo_item = extensions.eo.EOItemExt(result_item)
+    
+                     #                     result_item = EOItem(id=item_name,
+                     #    geometry=item.geometry,
+                     #    bbox=item.bbox,
+                     ##    datetime=item.datetime,
+                     #    properties={},
+                     #    bands=bands,
+                     #    gsd=10, 
+                     #    platform=item.platform, 
+                     #    instrument=item.instrument)
     
     for index, veg_index in enumerate(['NBR', 'NDVI', 'NDWI']):
 
@@ -180,10 +190,25 @@ def main(input_reference, aoi):
         cog(temp_name, os.path.join('.', item_name, output_name))
 
         result_item.add_asset(key=veg_index.lower(),
-                              asset=EOAsset(href='./{}'.format(output_name), 
-                              media_type=MediaType.GEOTIFF, 
-                              title=bands[index]['name'],
-                              bands=bands[index]))
+                           asset=Asset(href='./{}'.format(output_name), 
+                                       media_type=MediaType.GEOTIFF))
+        
+        asset = result_item.get_assets()[veg_index.lower()]                                   
+         
+        description = bands[index]['name']
+            
+        stac_band = extensions.eo.Band.create(name=veg_index.lower(), 
+                                                   common_name=bands[index]['common_name'],
+                                                   description=bands[index]['name'])
+        bands.append(stac_band)
+            
+        eo_item.set_bands([stac_band], asset=asset)
+            
+        #result_item.add_asset(key=veg_index.lower(),
+        #                      asset=EOAsset(href='./{}'.format(output_name), 
+        #                      media_type=MediaType.GEOTIFF, 
+        #                      title=bands[index]['name'],
+        #                      bands=[bands[index]]))
         
     catalog.add_items([result_item])
     
