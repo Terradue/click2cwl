@@ -125,14 +125,15 @@ def main(input_reference, aoi):
     del(swir16)
     
     
-    bands = [{'name': 'NBR',
+    default_bands = [{'name': 'NBR',
               'common_name': 'nbr'}, 
              {'name': 'NDVI',
               'common_name': 'ndvi'},
              {'name': 'NDWI',
               'common_name': 'ndwi'}]
     
-    catalog = Catalog(id='catalog', description='Results')
+    catalog = Catalog(id='catalog-{}'.format(item.id),
+                      description='Results')
 
     catalog.clear_items()
     catalog.clear_children()
@@ -140,15 +141,25 @@ def main(input_reference, aoi):
     item_name = 'INDEX_{}'.format(item.id)
     
     
-     
-    result_item = Item(id=item.id,
+    item.properties.pop('eo:bands', None)
+    item.properties['eo:gsd'] = 10
+    item.properties['eo:platform'] = item.properties['platform']
+    item.properties['eo:instrument'] = 'MSI'
+    
+    result_item = Item(id=item_name,
                        geometry=item.geometry,
                        bbox=item.bbox,
                        datetime=item.datetime,
                        properties=item.properties)
     
+    result_item.common_metadata.set_gsd(10)
+    
     eo_item = extensions.eo.EOItemExt(result_item)
     
+    #eo_item.set_bands(bands)
+    
+    #eo_item.common_metadata.set_gsd(10)
+
                      #                     result_item = EOItem(id=item_name,
                      #    geometry=item.geometry,
                      #    bbox=item.bbox,
@@ -158,6 +169,7 @@ def main(input_reference, aoi):
                      #    gsd=10, 
                      #    platform=item.platform, 
                      #    instrument=item.instrument)
+    bands = []
     
     for index, veg_index in enumerate(['NBR', 'NDVI', 'NDWI']):
 
@@ -195,15 +207,19 @@ def main(input_reference, aoi):
         
         asset = result_item.get_assets()[veg_index.lower()]                                   
          
-        description = bands[index]['name']
+        #description = bands[index]['name']
             
         stac_band = extensions.eo.Band.create(name=veg_index.lower(), 
-                                                   common_name=bands[index]['common_name'],
-                                                   description=bands[index]['name'])
+                                                   common_name=default_bands[index]['common_name'],
+                                                   description=default_bands[index]['name'])
         bands.append(stac_band)
             
         eo_item.set_bands([stac_band], asset=asset)
-            
+    
+    eo_item.set_bands(bands)
+          
+    eo_item.apply(bands)    
+    
         #result_item.add_asset(key=veg_index.lower(),
         #                      asset=EOAsset(href='./{}'.format(output_name), 
         #                      media_type=MediaType.GEOTIFF, 
