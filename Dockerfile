@@ -1,4 +1,3 @@
-#FROM docker-co.terradue.com/da-tools:1.0
 FROM centos:7
 
 

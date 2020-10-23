@@ -17,7 +17,7 @@ $graph:
     results:
       outputBinding:
         glob: .
-      type: Any
+      type: Directory
   requirements:
     EnvVarRequirement:
       envDef:

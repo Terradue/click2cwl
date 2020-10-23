@@ -202,7 +202,7 @@ def main(input_reference, aoi):
         cog(temp_name, os.path.join('.', item_name, output_name))
 
         result_item.add_asset(key=veg_index.lower(),
-                           asset=Asset(href='./{}'.format(output_name), 
+                              asset=Asset(href='./{}'.format(output_name), 
                                        media_type=MediaType.GEOTIFF))
         
         asset = result_item.get_assets()[veg_index.lower()]                                   
