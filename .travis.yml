@@ -4,7 +4,7 @@ services:
 env:
   global:
     - IMAGE_NAME=eoepca/vegetation-index
-    - VERSION=0.2
+    - VERSION=0.3
 
 before_script:
   - docker pull "$IMAGE_NAME" || true

@@ -1,5 +1,6 @@
 from pystac import *
 import gdal 
+from urllib.parse import urlparse
 import os
 import numpy as np
 
@@ -14,6 +15,18 @@ def set_env():
         os.environ['GDAL_DATA'] =  os.path.join(os.environ['PREFIX'], 'share/gdal')
         os.environ['PROJ_LIB'] = os.path.join(os.environ['PREFIX'], 'share/proj')
 
+def fix_asset_href(uri):
+
+    parsed = urlparse(uri)
+    
+    if parsed.scheme.startswith('http'):
+        
+        return '/vsicurl/{}'.format(uri)
+    
+    else:
+        
+        return uri
+        
 def get_item(catalog):
     
     cat = Catalog.from_file(catalog) 
@@ -33,24 +46,34 @@ def get_assets(item):
     
     eo_item = extensions.eo.EOItemExt(item)
     
-    for index, band in enumerate(eo_item.bands):
-   
-        if band.common_name in ['swir16']:
+    if (eo_item.bands) is not None:
+    
+        for index, band in enumerate(eo_item.bands):
 
-            asset_swir16 = item.assets[band.name].get_absolute_href()
+            if band.common_name in ['swir16']:
 
-        if band.common_name in ['swir22']:
+                asset_swir16 = fix_asset_href(item.assets[band.name].get_absolute_href())
 
-            asset_swir22 = item.assets[band.name].get_absolute_href()
+            if band.common_name in ['swir22']:
 
-        if band.common_name in ['nir']:
+                asset_swir22 = fix_asset_href(item.assets[band.name].get_absolute_href())
 
-            asset_nir = item.assets[band.name].get_absolute_href()
+            if band.common_name in ['nir']:
 
-        if band.common_name in ['red']:
+                asset_nir = fix_asset_href(item.assets[band.name].get_absolute_href())
 
-            asset_red = item.assets[band.name].get_absolute_href()
-            
+            if band.common_name in ['red']:
+
+                asset_red = fix_asset_href(item.assets[band.name].get_absolute_href())
+
+    else:
+        
+        asset_red = fix_asset_href(item.assets['B04'].get_absolute_href())
+        asset_nir = fix_asset_href(item.assets['B08'].get_absolute_href())
+        asset_swir16 = fix_asset_href(item.assets['B11'].get_absolute_href())
+        asset_swir22 = fix_asset_href(item.assets['B12'].get_absolute_href())
+
+        
     return asset_red, asset_nir, asset_swir16, asset_swir22
    
 def normalized_difference(band_1, band_2):

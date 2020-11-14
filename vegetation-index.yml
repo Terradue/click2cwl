@@ -1,4 +1,4 @@
-aoi: 'POLYGON((136.508 -36.108,136.508 -35.654,137.178 -35.654,137.178 -36.108,136.508 -36.108))'
+aoi: 'POLYGON((30.358 29.243,30.358 29.545,30.8 29.545,30.8 29.243,30.358 29.243))'
 input_reference:
 - class: Directory
-  path: file:///workspace/data/pippo2
+  path: file:///workspace/eoepca/app-vegetation-index/ugikjiux
