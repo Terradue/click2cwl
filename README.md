@@ -34,11 +34,60 @@ Post the Atom on the EOEPCA resource manager
 
 ### Application execution
 
-Use the parameters:
+#### Stage-in
 
-* **input_reference**:
+Create a YAML file with:
 
-    * https://catalog.terradue.com/sentinel2/search?uid=S2B_MSIL2A_20200130T004659_N0213_R102_T53HPA_20200130T022348
-    * https://catalog.terradue.com/sentinel2/search?uid=S2A_MSIL2A_20191216T004701_N0213_R102_T53HPA_20191216T024808
+instac.yml
+```yaml
+store_username: ''
+store_apikey: ''
+input_reference:
+- https://earth-search.aws.element84.com/v0/collections/sentinel-s2-l2a-cogs/items/S2B_36RTT_20191205_0_L2A 
+```
 
-* **aoi**: POLYGON((136.508 -36.108,136.508 -35.654,137.178 -35.654,137.178 -36.108,136.508 -36.108))
+Stage the STAC item as a local STAC catalog with:
+
+```console
+cwltool instac.cwl instac.yml
+```
+
+Check the output and copy the results path (e.g. `/workspace/eoepca/app-vegetation-index/ugikjiux`)
+
+#### Running the application
+
+Create a YAML file with:
+
+vegetation-index.yml
+```yaml
+aoi: 'POLYGON((30.358 29.243,30.358 29.545,30.8 29.545,30.8 29.243,30.358 29.243))'
+input_reference:
+- class: Directory
+  path: file:///workspace/eoepca/app-vegetation-index/ugikjiux
+```
+
+Run the application with:
+
+```console
+cwltool vegetation-index.cwl#vegetation-index vegetation-index.yml
+```
+
+### Development
+
+Create the conda environment with:
+
+```console
+conda env create -f environment.yml
+```
+
+Install the `vegetation-index` executable with:
+
+```console
+python setup.py install
+```
+
+Check the installation with:
+
+```console
+vegetation-index --help
+```
