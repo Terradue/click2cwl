@@ -4,7 +4,7 @@ $graph:
   class: CommandLineTool
   hints:
     DockerRequirement:
-      dockerPull: stage
+      dockerPull: eoepca/stage-in:0.7
   id: stagein
   inputs:
     inp1:
