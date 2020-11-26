@@ -35,18 +35,32 @@ input_reference = dict([('id', 'input_reference'),
                         ('stac:href', 'catalog.json'),
                         ('scatter', 'True')])
 
-@click.command()
-@click.option('--input_reference', '-i', 'e_input_reference', help=input_reference['doc'])
+@click.command(context_settings=dict(
+    ignore_unknown_options=True,
+    allow_extra_args=True,
+))
+#@click.option('--input_reference', '-i', 'e_input_reference', help=input_reference['doc'])
 @click.option('--aoi', '-a', 'e_aoi', default=None, help=aoi['doc'])
-def entry(e_input_reference, e_aoi):
+@click.option('--cwl', is_flag=True, default=False, help='Prints CWL')
+@click.pass_context
+def entry(ctx, **kwargs): #, e_input_reference, e_aoi, cwl):
     
-    input_reference['value'] = e_input_reference # overwrites the "default" value with the one entered in the command line
+    print(ctx.get_help())
+    print(ctx.command_path)
+    print(ctx.args)
     
-    if e_aoi is not None: 
-        aoi['value'] = e_aoi # replace with aoi entered, otherwise use default
-    else: 
-        aoi['value'] = None
-        
+    print(ctx.protected_args)
+    
+    print(ctx.params)
+    
+    aoi['value'] = ctx.params['e_aoi']
+    
+    input_reference['value'] = ctx.params['e_input_reference']
+    
+    print(aoi, input_reference, workflow)
+    
+    sys.exit(0)
+            
     main(input_reference, aoi)
 
 def main(input_reference, aoi):
