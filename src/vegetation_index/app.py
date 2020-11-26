@@ -42,8 +42,11 @@ def entry(e_input_reference, e_aoi):
     
     input_reference['value'] = e_input_reference # overwrites the "default" value with the one entered in the command line
     
-    if e_aoi is not None: aoi['value'] = e_aoi # replace with aoi entered, otherwise use default
-    
+    if e_aoi is not None: 
+        aoi['value'] = e_aoi # replace with aoi entered, otherwise use default
+    else: 
+        aoi['value'] = None
+        
     main(input_reference, aoi)
 
 def main(input_reference, aoi):
@@ -78,23 +81,27 @@ def main(input_reference, aoi):
     print('- tif name', tif)
     
     #print(aoi['value'])
-    min_lon, min_lat, max_lon, max_lat = loads(aoi['value']).bounds
-    print('-', min_lon, min_lat, max_lon, max_lat)
-    print('- check bbox of item:', item.bbox) # 106.80765, -7.32209, 107.80392, -6.324961
-    
-    # manually define new bounds to fit the temporary image
-    min_lon, min_lat, max_lon, max_lat = [106.85, -7.30, 107.80, -6.35]
-    print('-', min_lon, min_lat, max_lon, max_lat)
-    
-    os.environ['PREFIX'] = '/opt/anaconda/envs/env_vi/'
-    os.environ['PROJ_LIB'] = os.path.join(os.environ['PREFIX'], 'share/proj')
-    os.environ['GPT_BIN'] = os.path.join(os.environ['PREFIX'], 'snap/bin/gpt')
+    if aoi['value']:
+        
+        min_lon, min_lat, max_lon, max_lat = loads(aoi['value']).bounds
+        print('-', min_lon, min_lat, max_lon, max_lat)
+        print('- check bbox of item:', item.bbox) # 106.80765, -7.32209, 107.80392, -6.324961
+
+        # manually define new bounds to fit the temporary image
+        min_lon, min_lat, max_lon, max_lat = [106.85, -7.30, 107.80, -6.35]
+        print('-', min_lon, min_lat, max_lon, max_lat)
+    else: 
+        
+        min_lon, min_lat, max_lon, max_lat = None, None, None, None
+    #os.environ['PREFIX'] = '/opt/anaconda/envs/env_vi/'
+    #os.environ['PROJ_LIB'] = os.path.join(os.environ['PREFIX'], 'share/proj')
+    #os.environ['GPT_BIN'] = os.path.join(os.environ['PREFIX'], 'snap/bin/gpt')
     print('- envi updated')
     
     gdal.Translate(tif,
                    vrt,
                    outputType=gdal.GDT_Int16,
-                   projWin=[min_lon, max_lat, max_lon, min_lat], # in the format [ulx, uly, lrx, lry]
+                   projWin=[min_lon, max_lat, max_lon, min_lat] if aoi['value'] else None, # in the format [ulx, uly, lrx, lry]
                    projWinSRS='EPSG:4326')
     
     print('- translate ok')

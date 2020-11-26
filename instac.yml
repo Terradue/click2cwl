@@ -1,4 +1,4 @@
 store_username: ''
 store_apikey: ''
 input_reference:
-- https://earth-search.aws.element84.com/v0/collections/sentinel-s2-l2a-cogs/items/S2B_36RTT_20191205_0_L2A 
+- 'https://terradue-rtd.gitlab.io/sentinel-s2-l2a-cogs/55/H/EA/S2B_MSIL2A_20200128T001059_N0213_R073_T55HEA_20200128T020131/S2B_MSIL2A_20200128T001059_N0213_R073_T55HEA_20200128T020131.json'
