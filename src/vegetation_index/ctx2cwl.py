@@ -27,7 +27,7 @@ class CtxCWL:
         
         return param.opts
     
-    def get_cwl(self):
+    #def get_cwl(self):
         
         
     

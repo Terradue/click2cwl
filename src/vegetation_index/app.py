@@ -35,6 +35,7 @@ input_reference = dict([('id', 'input_reference'),
                         ('stac:collection', 'source'),
                         ('stac:href', 'catalog.json'),
                         ('scatter', 'True')])
+#@click.option('--cwl', is_flag=True, default=False, help='Prints CWL')
 
 @click.command(context_settings=dict(
     ignore_unknown_options=True,
@@ -42,10 +43,11 @@ input_reference = dict([('id', 'input_reference'),
 ))
 @click.option('--input_reference', '-i', 'e_input_reference', type=click.Path(), help=input_reference['doc'])
 @click.option('--aoi', '-a', 'e_aoi', default=None, help=aoi['doc'])
-@click.option('--cwl', is_flag=True, default=False, help='Prints CWL')
 @click.pass_context
 def entry(ctx, **kwargs): #, e_input_reference, e_aoi, cwl):
-    
+    print(ctx.args)
+    extra_params = {ctx.args[i][2:]: ctx.args[i+1] for i in range(0, len(ctx.args), 2)}
+
     #print(ctx.get_help())
     #print(ctx.command_path)
     #print(ctx.args)
@@ -74,7 +76,7 @@ def entry(ctx, **kwargs): #, e_input_reference, e_aoi, cwl):
     #print('params ', ctx.command.params[0].params)
         
     #print('opts ', ctx.command.params[0].opts)
-    
+    print(extra_params)
     sys.exit(0)
     #print(ctx.protected_args)
     
