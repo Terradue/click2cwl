@@ -9,6 +9,7 @@ from shapely.wkt import loads
 from time import sleep
 from .helpers import get_item, cog, set_env, get_assets, normalized_difference#, generate_evi, generate_savi, generate_msavi
 
+from .ctx2cwl import CtxCWL
 
 logging.basicConfig(stream=sys.stderr, 
                     level=logging.DEBUG,
@@ -39,19 +40,45 @@ input_reference = dict([('id', 'input_reference'),
     ignore_unknown_options=True,
     allow_extra_args=True,
 ))
-#@click.option('--input_reference', '-i', 'e_input_reference', help=input_reference['doc'])
+@click.option('--input_reference', '-i', 'e_input_reference', type=click.Path(), help=input_reference['doc'])
 @click.option('--aoi', '-a', 'e_aoi', default=None, help=aoi['doc'])
 @click.option('--cwl', is_flag=True, default=False, help='Prints CWL')
 @click.pass_context
 def entry(ctx, **kwargs): #, e_input_reference, e_aoi, cwl):
     
-    print(ctx.get_help())
-    print(ctx.command_path)
-    print(ctx.args)
+    #print(ctx.get_help())
+    #print(ctx.command_path)
+    #print(ctx.args)
+    #print(dir(ctx))
+    #print(dir(ctx.command))
+    #print('baseCommand ', ctx.command_path)
+    #print(ctx.command.name)
+    #for index, param in enumerate(ctx.command.params):
+    #    print('its an option: ', isinstance(param, click.Option))
+    #    print('its an argument: ', isinstance(param, click.Argument))
+    #    print(ctx.command.params[index].opts)
+    #    print('type: ', ctx.command.params[index].type)
+    #    print('type Path: ', isinstance(ctx.command.params[index].type, click.types.Path))
+    #    print('type File: ', isinstance(ctx.command.params[index].type, click.types.File))
+    #print(dir(ctx.command.params[0]))
+    thing = CtxCWL(ctx)
     
-    print(ctx.protected_args)
+    print(thing.command)
+
+    print(thing.params)
     
-    print(ctx.params)
+    for param in thing.params:
+        
+        print(thing.is_option(param))
+        print(thing.get_opts(param))
+    #print('params ', ctx.command.params[0].params)
+        
+    #print('opts ', ctx.command.params[0].opts)
+    
+    sys.exit(0)
+    #print(ctx.protected_args)
+    
+    #print(ctx.params)
     
     aoi['value'] = ctx.params['e_aoi']
     
