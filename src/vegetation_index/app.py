@@ -45,9 +45,17 @@ input_reference = dict([('id', 'input_reference'),
 @click.option('--aoi', '-a', 'e_aoi', default=None, help=aoi['doc'])
 @click.pass_context
 def entry(ctx, **kwargs): #, e_input_reference, e_aoi, cwl):
+    
+     # vegetation-index --dump cwl --docker a -r a=1 -r b=2
+    
     print(ctx.args)
     extra_params = {ctx.args[i][2:]: ctx.args[i+1] for i in range(0, len(ctx.args), 2)}
 
+    
+   
+    
+    
+    
     #print(ctx.get_help())
     #print(ctx.command_path)
     #print(ctx.args)
