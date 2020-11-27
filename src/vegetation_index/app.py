@@ -51,7 +51,8 @@ def entry(ctx, **kwargs): #, e_input_reference, e_aoi, cwl):
     print(ctx.args)
     extra_params = {ctx.args[i][2:]: ctx.args[i+1] for i in range(0, len(ctx.args), 2)}
 
-    
+    # todo
+    # check if --dump is in ['--dump', 'cwl', '--docker', 'a'] to generate the CWL or the params file
    
     
     
