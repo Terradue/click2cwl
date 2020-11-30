@@ -4,6 +4,12 @@ from urllib.parse import urlparse
 import os
 import numpy as np
 
+# Define parameters
+scale_factor = 1.0 / 0.0001
+a_min = -10000
+a_max = 10000
+nodata = -11111
+
 
 gdal.UseExceptions()
 
@@ -17,7 +23,6 @@ def set_env():
         os.environ['PROJ_LIB'] = os.path.join(os.environ['PREFIX'], 'share/proj')
 
 def fix_asset_href(uri):
-    #print('-', uri)
     parsed = urlparse(uri)
     
     if parsed.scheme.startswith('http'):
@@ -46,7 +51,6 @@ def get_item(catalog):
 def get_assets(item):
     
     eo_item = extensions.eo.EOItemExt(item)
-    #print(eo_item)
     
     # Get bands
     if (eo_item.bands) is not None:
@@ -80,50 +84,75 @@ def get_assets(item):
     
     return asset_blue, asset_green, asset_red, asset_nir, asset_swir16, asset_swir22
 
+def truncate(arr):
+    
+    arr2 = np.where(arr < a_min, a_min, arr)
+    arr2 = np.where(arr > a_max, a_max, arr2)
+    arr2 = np.where(np.logical_or(np.isnan(arr),np.isinf(arr)), nodata, arr2) # perhaps I should also add those pixels that are already no_data from original image?
+
+    return arr2
     
 def normalized_difference(band_1, band_2):
     
-    width = np.shape(band_1.shape)[0] # is this correct?!? or just np.shape(band1)[0] probably?
+    width = np.shape(band_1)[0] 
     height = np.shape(band_1)[1]
-
-    norm_diff = np.zeros((height, width), dtype=np.uint)
-    norm_diff = 10000 * ((band_1 - band_2) / (band_1 + band_2))
     
-    return norm_diff
+    norm_diff = np.zeros((height, width), dtype=np.int16)
+    norm_diff = scale_factor * ((band_1 - band_2) / (band_1 + band_2))
+    
+    print('norm_diff', np.nanmin(norm_diff), np.nanmax(norm_diff))
+    #logging.info('- norm_diff shape: ' + str(np.shape(norm_diff)))
+    
+    norm_diff_tr = truncate(norm_diff)
+    print('norm_diff_tr', np.nanmin(norm_diff_tr), np.nanmax(norm_diff_tr))
+       
+    return norm_diff_tr
 
-"""
-def generate_evi(blue, green, red, nir, C1=6, C2=7.5, L_evi=1):
+def generate_evi(blue, red, nir, C1=6, C2=7.5, L_evi=1):
     #C1 = 6; C2 = 7.5; L_evi = 1 # these are values used in S2 example here: https://custom-scripts.sentinel-hub.com/sentinel-2/evi/#. 
     
-    width = np.shape(blue.shape)[0] # check shape. not sure this is correct.
+    width = np.shape(blue)[0] 
     height = np.shape(blue)[1]
-
-    evi = np.zeros((height, width), dtype=np.uint)
     
-    evi = green*( (nir - red) / (nir + C1*red - C2*blue + L_evi) )
+    evi = np.zeros((height, width), dtype=np.int16)
+    evi = scale_factor * 2.5 * (nir - red) / (nir + C1*red - C2*blue + L_evi) 
+    print('evi', np.nanmin(evi), np.nanmax(evi))
+    #logging.info('- evi shape: ' + str(np.shape(evi)))
     
-    return evi
+    evi_tr = truncate(evi)
+    print('evi_tr', np.nanmin(evi_tr), np.nanmax(evi_tr))
+    
+    return evi_tr
     
 def generate_savi(red, nir, L_savi = 0.5): 
     
-    width = np.shape(red.shape)[0] # check shape. not sure this is correct.
+    width = np.shape(red)[0] 
     height = np.shape(red)[1]
 
-    savi = np.zeros((height, width), dtype=np.uint)
+    savi = np.zeros((height, width), dtype=np.int16)
+    savi = scale_factor * ((nir - red) / (nir + red + L_savi)) * (1 + L_savi)
+    #logging.info('- savi shape: ' + str(np.shape(savi)))
+    print('savi', np.nanmin(savi), np.nanmax(savi))
     
-    savi = ((nir - red) / (nir + red + L_savi)) * (1 + L_savi)
-    return savi
+    savi_tr = truncate(savi)
+    print('savi_tr', np.nanmin(savi_tr), np.nanmax(savi_tr))
+    
+    return savi_tr
 
 def generate_msavi(red, nir):
     
-    width = np.shape(red.shape)[0] # check shape. not sure this is correct.
+    width = np.shape(red)[0] 
     height = np.shape(red)[1]
 
-    msavi = np.zeros((height, width), dtype=np.uint)
+    msavi = np.zeros((height, width), dtype=np.int16)
+    msavi = scale_factor * (2*nir + 1 - np.sqrt((2*nir + 1)**2 - 8*(nir - red))) / 2
+    #logging.info('- msavi shape: ' + str(np.shape(msavi)))
+    print('msavi', np.nanmin(msavi), np.nanmax(msavi))
     
-    msavi = (2*nir + 1 – np.sqrt((2 * nir + 1)**2 – 8*(nir - red))) / 2
-    return msavi
-"""
+    msavi_tr = truncate(msavi)
+    print('msavi_tr', np.nanmin(msavi_tr), np.nanmax(msavi_tr))
+    
+    return msavi_tr
 
 def cog(input_tif, output_tif,no_data=None):
     
