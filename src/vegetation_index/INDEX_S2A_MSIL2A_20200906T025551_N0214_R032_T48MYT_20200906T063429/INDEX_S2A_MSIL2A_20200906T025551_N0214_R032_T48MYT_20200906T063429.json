@@ -1,0 +1,234 @@
+{
+    "type": "Feature",
+    "stac_version": "1.0.0-beta.2",
+    "id": "INDEX_S2A_MSIL2A_20200906T025551_N0214_R032_T48MYT_20200906T063429",
+    "properties": {
+        "datetime": "2020-09-06T03:19:58Z",
+        "platform": "sentinel-2a",
+        "constellation": "sentinel-2",
+        "instruments": [
+            "msi"
+        ],
+        "gsd": 10,
+        "view:off_nadir": 0,
+        "proj:epsg": 32748,
+        "sentinel:utm_zone": 48,
+        "sentinel:latitude_band": "M",
+        "sentinel:grid_square": "YT",
+        "sentinel:sequence": "0",
+        "sentinel:product_id": "S2A_MSIL2A_20200906T025551_N0214_R032_T48MYT_20200906T063429",
+        "sentinel:data_coverage": 99.38,
+        "eo:cloud_cover": null,
+        "sentinel:valid_cloud_cover": true,
+        "created": "2020-09-06T17:17:32.571Z",
+        "updated": "2020-09-06T17:17:32.571Z",
+        "eo:gsd": 10,
+        "eo:platform": "sentinel-2a",
+        "eo:instrument": "MSI",
+        "eo:bands": [
+            {
+                "name": "ndvi",
+                "common_name": "ndvi",
+                "description": "NDVI"
+            },
+            {
+                "name": "ndvi",
+                "common_name": "ndvi",
+                "description": "NDVI"
+            },
+            {
+                "name": "evi",
+                "common_name": "evi",
+                "description": "EVI"
+            },
+            {
+                "name": "savi",
+                "common_name": "savi",
+                "description": "SAVI"
+            },
+            {
+                "name": "msavi",
+                "common_name": "msavi",
+                "description": "MSAVI"
+            },
+            {
+                "name": "ndmi",
+                "common_name": "ndmi",
+                "description": "NDMI"
+            },
+            {
+                "name": "nbr",
+                "common_name": "nbr",
+                "description": "NBR"
+            },
+            {
+                "name": "ndwi",
+                "common_name": "ndwi",
+                "description": "NDWI"
+            },
+            {
+                "name": "nbr2",
+                "common_name": "nbr2",
+                "description": "NBR2"
+            },
+            {
+                "name": "ndbi",
+                "common_name": "ndbi",
+                "description": "NDBI"
+            }
+        ]
+    },
+    "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+            [
+                [
+                    106.81138090503275,
+                    -7.322099168536809
+                ],
+                [
+                    106.80765145853707,
+                    -6.329361876333265
+                ],
+                [
+                    107.79956541898368,
+                    -6.3249619900708005
+                ],
+                [
+                    107.80392925967516,
+                    -7.088286274637539
+                ],
+                [
+                    107.75255657101151,
+                    -7.3173281882730015
+                ],
+                [
+                    106.81138090503275,
+                    -7.322099168536809
+                ]
+            ]
+        ]
+    },
+    "links": [
+        {
+            "rel": "root",
+            "href": "../catalog.json",
+            "type": "application/json"
+        },
+        {
+            "rel": "parent",
+            "href": "../catalog.json",
+            "type": "application/json"
+        }
+    ],
+    "assets": {
+        "ndvi": {
+            "href": "./NDVI_S2A_MSIL2A_20200906T025551_N0214_R032_T48MYT_20200906T063429.tif",
+            "type": "image/tiff; application=geotiff",
+            "eo:bands": [
+                {
+                    "name": "ndvi",
+                    "common_name": "ndvi",
+                    "description": "NDVI"
+                }
+            ]
+        },
+        "evi": {
+            "href": "./EVI_S2A_MSIL2A_20200906T025551_N0214_R032_T48MYT_20200906T063429.tif",
+            "type": "image/tiff; application=geotiff",
+            "eo:bands": [
+                {
+                    "name": "evi",
+                    "common_name": "evi",
+                    "description": "EVI"
+                }
+            ]
+        },
+        "savi": {
+            "href": "./SAVI_S2A_MSIL2A_20200906T025551_N0214_R032_T48MYT_20200906T063429.tif",
+            "type": "image/tiff; application=geotiff",
+            "eo:bands": [
+                {
+                    "name": "savi",
+                    "common_name": "savi",
+                    "description": "SAVI"
+                }
+            ]
+        },
+        "msavi": {
+            "href": "./MSAVI_S2A_MSIL2A_20200906T025551_N0214_R032_T48MYT_20200906T063429.tif",
+            "type": "image/tiff; application=geotiff",
+            "eo:bands": [
+                {
+                    "name": "msavi",
+                    "common_name": "msavi",
+                    "description": "MSAVI"
+                }
+            ]
+        },
+        "ndmi": {
+            "href": "./NDMI_S2A_MSIL2A_20200906T025551_N0214_R032_T48MYT_20200906T063429.tif",
+            "type": "image/tiff; application=geotiff",
+            "eo:bands": [
+                {
+                    "name": "ndmi",
+                    "common_name": "ndmi",
+                    "description": "NDMI"
+                }
+            ]
+        },
+        "nbr": {
+            "href": "./NBR_S2A_MSIL2A_20200906T025551_N0214_R032_T48MYT_20200906T063429.tif",
+            "type": "image/tiff; application=geotiff",
+            "eo:bands": [
+                {
+                    "name": "nbr",
+                    "common_name": "nbr",
+                    "description": "NBR"
+                }
+            ]
+        },
+        "ndwi": {
+            "href": "./NDWI_S2A_MSIL2A_20200906T025551_N0214_R032_T48MYT_20200906T063429.tif",
+            "type": "image/tiff; application=geotiff",
+            "eo:bands": [
+                {
+                    "name": "ndwi",
+                    "common_name": "ndwi",
+                    "description": "NDWI"
+                }
+            ]
+        },
+        "nbr2": {
+            "href": "./NBR2_S2A_MSIL2A_20200906T025551_N0214_R032_T48MYT_20200906T063429.tif",
+            "type": "image/tiff; application=geotiff",
+            "eo:bands": [
+                {
+                    "name": "nbr2",
+                    "common_name": "nbr2",
+                    "description": "NBR2"
+                }
+            ]
+        },
+        "ndbi": {
+            "href": "./NDBI_S2A_MSIL2A_20200906T025551_N0214_R032_T48MYT_20200906T063429.tif",
+            "type": "image/tiff; application=geotiff",
+            "eo:bands": [
+                {
+                    "name": "ndbi",
+                    "common_name": "ndbi",
+                    "description": "NDBI"
+                }
+            ]
+        }
+    },
+    "bbox": [
+        106.80765145853707,
+        -7.322099168536809,
+        107.80392925967516,
+        -6.3249619900708005
+    ],
+    "stac_extensions": [
+        "eo"
+    ]
+}

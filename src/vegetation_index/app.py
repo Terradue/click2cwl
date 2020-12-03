@@ -7,7 +7,11 @@ import click
 from pystac import *
 from shapely.wkt import loads
 from time import sleep
-from .helpers import get_item, cog, set_env, get_assets, normalized_difference, generate_evi, generate_savi, generate_msavi
+from .helpers import get_item, cog, set_env, get_assets, normalized_difference, generate_evi, generate_savi, generate_msavi, writeFile, getBands_and_Mask
+import matplotlib.pyplot as plt
+import matplotlib.colors as colors
+
+
 
 logging.basicConfig(stream=sys.stderr, 
                     level=logging.DEBUG,
@@ -17,7 +21,6 @@ logging.basicConfig(stream=sys.stderr,
 workflow = dict([('id', 'vegetation-index'),
                 ('label', 'Vegetation index'),
                 ('doc', 'Vegetation index processor')])
-
 
 aoi = dict([('id', 'aoi'), 
               ('label', 'Area of interest'),
@@ -33,6 +36,12 @@ input_reference = dict([('id', 'input_reference'),
                         ('stac:collection', 'source'),
                         ('stac:href', 'catalog.json'),
                         ('scatter', 'True')])
+
+scale_factor = 0.0001
+range_min = -10000
+range_max = 10000
+nodata = -11111
+datatype = np.int16
 
 @click.command()
 @click.option('--input_reference', '-i', 'e_input_reference', help=input_reference['doc'])
@@ -64,7 +73,7 @@ def main(input_reference, aoi):
     
     ds = gdal.BuildVRT(vrt,
                    [asset_blue, asset_green, asset_red, asset_nir, asset_swir16, asset_swir22],
-                   srcNodata=0,
+                   srcNodata=nodata,
                    xRes=10, 
                    yRes=10,
                    separate=True)
@@ -90,8 +99,8 @@ def main(input_reference, aoi):
         logging.info('- check bbox of item: ' + str(item.bbox)) # 106.80765, -7.32209, 107.80392, -6.324961
 
         # manually define new bounds to fit the temporary image
-        min_lon, min_lat, max_lon, max_lat = 106.85, -7.30, 107.80, -6.35
-        logging.info('- ' + str(min_lon) + ' ' + str(min_lat) + ' ' + str(max_lon) + ' ' + str(max_lat))
+        #min_lon, min_lat, max_lon, max_lat = 106.85, -7.30, 107.80, -6.35
+        #logging.info('- ' + str(min_lon) + ' ' + str(min_lat) + ' ' + str(max_lon) + ' ' + str(max_lat))
         
     #logging.info('- ' + str(min_lon) + ' ' + str(min_lat) + ' ' + str(max_lon) + ' ' + str(max_lat))
     
@@ -102,7 +111,7 @@ def main(input_reference, aoi):
     gdal.Translate(tif,
                    vrt,
                    outputType=gdal.GDT_Int16,
-                   projWin=[min_lon, max_lat, max_lon, min_lat] if aoi['value'] else None, # in the format [ulx, uly, lrx, lry]
+                   projWin=[min_lon, max_lat, max_lon, min_lat] if aoi['value'] != None else None,
                    projWinSRS='EPSG:4326')
     
     #logging.info('- translate ok')
@@ -117,12 +126,7 @@ def main(input_reference, aoi):
     input_geotransform = ds.GetGeoTransform()
     input_georef = ds.GetProjectionRef()
     
-    blue = ds.GetRasterBand(1).ReadAsArray(); print('blue', np.nanmin(blue), np.nanmax(blue))
-    green = ds.GetRasterBand(2).ReadAsArray() ; print('green', np.nanmin(green), np.nanmax(green))
-    red = ds.GetRasterBand(3).ReadAsArray(); print('red', np.nanmin(red), np.nanmax(red))
-    nir = ds.GetRasterBand(4).ReadAsArray(); print('nir', np.nanmin(nir), np.nanmax(nir))
-    swir16 = ds.GetRasterBand(5).ReadAsArray(); print('swir16', np.nanmin(swir16), np.nanmax(swir16))
-    swir22 = ds.GetRasterBand(6).ReadAsArray(); print('swir22', np.nanmin(swir22), np.nanmax(swir22))
+    blue, green, red, nir, swir16, swir22, mask = getBands_and_Mask(ds)
     
     ds = None
     os.remove(tif)
@@ -131,37 +135,36 @@ def main(input_reference, aoi):
     #----------------------------------------------
     """Now calculate Spectral Indices. The list is:
     --> info here: https://www.usgs.gov/core-science-systems/nli/landsat/landsat-surface-reflectance-derived-spectral-indices?qt-science_support_page_related_con=0#qt-science_support_page_related_con)"""
-    
-    # Normalized Difference Vegetation Index (NDVI) = (NIR - R) / (NIR + R)
-    ndvi = normalized_difference(nir, red)
-    
-    # Enhanced Vegetation Index (EVI) = 2.5 * G * ((NIR - R) / (NIR + C1 * R – C2 * B + L_evi)) # notice a 2.5 missing in Landsat reference. 
-    evi = generate_evi(blue, red, nir, C1 = 6, C2 = 7.5, L_evi = 1) # these are values used in S2 example here: https://custom-scripts.sentinel-hub.com/custom-scripts/sentinel-2/evi/#
-    
-    # Soil Adjusted Vegetation Index (SAVI) = ((NIR - R) / (NIR + R + L_savi)) * (1 + L_savi)
-    savi = generate_savi(red, nir, L_savi = 0.5)
-    
-    # Modified Soil Adjusted Vegetation Index (MSAVI) = (2 * NIR + 1 – sqrt ((2 * NIR + 1)^2 – 8 * (NIR - R))) / 2
-    msavi = generate_msavi(red, nir)
-    
-    # Normalized Difference Moisture Index (NDMI) or Normalized Burn Ratio (NBR) or Normalized Difference Water Index (NDWI) ==> # NDMI or NBR or NDWI = (NIR - SWIR) / (NIR + SWIR)
-    ndmi = normalized_difference(nir, swir22)
-    nbr = normalized_difference(nir, swir22)
-    ndwi = normalized_difference(nir, swir22)
-    
-    # Normalized Burn Ratio 2 (NBR2) = (SWIR1 – SWIR2) / (SWIR1 + SWIR2)
-    nbr2 = normalized_difference(swir16, swir22)
-    
-    # Normalized Difference Built-up Index (NDBI) (SWIR - NIR) / (SWIR + NIR)
-    ndbi = normalized_difference(swir22, nir)
-    
+
+    # Normalized Difference Vegetation Index (NDVI)
+    ndvi = normalized_difference(mask, nir, red)
+
+    # Enhanced Vegetation Index (EVI) 
+    evi = generate_evi(mask, blue, red, nir, C1 = 6, C2 = 7.5, L_evi = 1) 
+
+    # Soil Adjusted Vegetation Index (SAVI)
+    savi = generate_savi(mask, red, nir, L_savi = 0.428)
+
+    # Modified Soil Adjusted Vegetation Index (MSAVI)
+    msavi = generate_msavi(mask, red, nir)
+
+    # Normalized Difference Moisture Index (NDMI) or Burn Ratio (NBR) or Water Index (NDWI) 
+    ndmi = normalized_difference(mask, nir, swir22)
+    nbr = normalized_difference(mask, nir, swir22)
+    ndwi = normalized_difference(mask, nir, swir22)
+
+    # Normalized Burn Ratio 2 (NBR2)
+    nbr2 = normalized_difference(mask, swir16, swir22)
+
+    # Normalized Difference Built-up Index (NDBI)
+    ndbi = normalized_difference(mask, swir22, nir)
+
     logging.info('- Spectral Indices calculated successfully.')
     #----------------------------------------------
     
     # Delete bands as not in use anymore
     blue = green = red = nir = swir16 = swir22 = None
     del(blue); del(green); del(red); del(nir); del(swir16); del(swir22) 
-    
     
     # Create a new Item (of EO extenstion class) with same metadata as original Item, but with all Spectral Indices as separate bands 
     default_bands = [{'name': 'NDVI', 'common_name': 'ndvi'},
@@ -196,22 +199,10 @@ def main(input_reference, aoi):
     
     result_item.common_metadata.set_gsd(item.properties['eo:gsd']) 
     
-    eo_item = extensions.eo.EOItemExt(result_item) # from pystac https://pystac.readthedocs.io/en/latest/api.html
+    # Define my Item with EOItemExt from pystac https://pystac.readthedocs.io/en/latest/api.html
+    eo_item = extensions.eo.EOItemExt(result_item)
     
-    # the following lines have been replaced by the for loop I think...
-    #eo_item.common_metadata.set_gsd(10)
-
-    #result_item = EOItem(id=item_name,
-    #                     geometry=item.geometry,
-    #                     bbox=item.bbox,
-    #                     datetime=item.datetime,
-    #                     properties={},
-    #                     bands=bands,
-    #                     gsd=10, 
-    #                     platform=item.platform, 
-    #                     instrument=item.instrument)
-    
-    bands = [] # what does this refer to?!?!
+    bands = [] 
     
     for index, veg_index in enumerate(['NDVI', 'EVI', 'SAVI', 'MSAVI', 'NDMI', 'NBR', 'NDWI', 'NBR2', 'NDBI']): # ensure these are in the same order as default_bands
         print('- Working on:', index, veg_index)
@@ -219,56 +210,33 @@ def main(input_reference, aoi):
         temp_name = '_{}_{}.tif'.format(veg_index, item.id)
         output_name = '{}_{}.tif'.format(veg_index, item.id)
 
-        driver = gdal.GetDriverByName('GTiff')
-
-        output = driver.Create(temp_name, 
-                               width, 
-                               height, 
-                               1, 
-                               gdal.GDT_Int16)
-
-        output.SetGeoTransform(input_geotransform)
-        output.SetProjection(input_georef)
-        #output.GetRasterBand(1).WriteArray(nbr) # shouldnt this be the actual array of each SI ie key=veg_index.lower()
-        
-        output.GetRasterBand(1).WriteArray(locals()[veg_index.lower()]) # im using the variable given its name as str 
-        
-        output.FlushCache()
-
-        sleep(2) # why this?
-
-        output = None; del(output)
+        vi_arr = veg_index.lower()
+      
+        writeFile(temp_name,input_geotransform,input_georef,locals()[vi_arr],width,height)
 
         os.makedirs(os.path.join('.', item_name),
                     exist_ok=True)
         
         cog(temp_name, os.path.join('.', item_name, output_name)) # takes temporary and output folder names)
 
-        result_item.add_asset(key=veg_index.lower(),
+        result_item.add_asset(key=vi_arr,
                               asset=Asset(href='./{}'.format(output_name), 
                                           media_type=MediaType.GEOTIFF))
         
-        asset = result_item.get_assets()[veg_index.lower()]                                   
+        asset = result_item.get_assets()[vi_arr]                                   
         
         #description = bands[index]['name']
             
-        stac_band = extensions.eo.Band.create(name=veg_index.lower(),
+        stac_band = extensions.eo.Band.create(name=vi_arr,
                                               common_name=default_bands[index]['common_name'],
                                               description=default_bands[index]['name'])
         bands.append(stac_band)
         
         eo_item.set_bands([stac_band], asset=asset)
         
-    eo_item.set_bands(bands)
-    print('- eo_bands complete:', bands)
+    eo_item.set_bands(bands) # isnt this redundant given the line above in hte for loop?   
     
-    eo_item.apply(bands)    
-    
-        #result_item.add_asset(key=veg_index.lower(),
-        #                      asset=EOAsset(href='./{}'.format(output_name), 
-        #                      media_type=MediaType.GEOTIFF, 
-        #                      title=bands[index]['name'],
-        #                      bands=[bands[index]]))
+    eo_item.apply(bands) # would be good to apply a cloud mask here as additional attribute: cloud_cover=(None default)
         
     catalog.add_items([result_item])
     
@@ -278,6 +246,7 @@ def main(input_reference, aoi):
     stop
     
 if __name__ == '__main__':
+    
     entry()
 
             
