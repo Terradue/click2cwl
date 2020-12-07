@@ -12,7 +12,6 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 
 
-
 logging.basicConfig(stream=sys.stderr, 
                     level=logging.DEBUG,
                     format='%(asctime)s %(levelname)-8s %(message)s',
@@ -148,16 +147,18 @@ def main(input_reference, aoi):
     # Modified Soil Adjusted Vegetation Index (MSAVI)
     msavi = generate_msavi(mask, red, nir)
 
-    # Normalized Difference Moisture Index (NDMI) or Burn Ratio (NBR) or Water Index (NDWI) 
-    ndmi = normalized_difference(mask, nir, swir22)
-    nbr = normalized_difference(mask, nir, swir22)
-    ndwi = normalized_difference(mask, nir, swir22)
+    # Normalized Difference Moisture Index (NDMI) or Water Index (NDWI) 
+    ndmi = normalized_difference(mask, nir, swir16)
+    ndwi = normalized_difference(mask, nir, swir16)
 
+    # Normalized Burn Ratio (NBR) 
+    nbr = normalized_difference(mask, nir, swir22)
+    
     # Normalized Burn Ratio 2 (NBR2)
     nbr2 = normalized_difference(mask, swir16, swir22)
 
     # Normalized Difference Built-up Index (NDBI)
-    ndbi = normalized_difference(mask, swir22, nir)
+    ndbi = normalized_difference(mask, swir16, nir)
 
     logging.info('- Spectral Indices calculated successfully.')
     #----------------------------------------------

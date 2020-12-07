@@ -117,11 +117,11 @@ def getBands_and_Mask(ds):
 def normalized_difference(mask, band_1, band_2):
     """ used to calculate:
     - NDVI = (NIR - R) / (NIR + R)
-    - Normalized Burn Ratio 2 (NBR2) = (SWIR1 – SWIR2) / (SWIR1 + SWIR2)
-    - Normalized Difference Moisture Index (NDMI) = (NIR - SWIR) / (NIR + SWIR)
-    - Normalized Burn Ratio (NBR) = (NIR - SWIR) / (NIR + SWIR)
-    - Normalized Difference Water Index (NDWI) = (NIR - SWIR) / (NIR + SWIR)
-    - Normalized Difference Built-up Index (NDBI) = (SWIR - NIR) / (SWIR + NIR)"""
+    - Normalized Difference Moisture Index (NDMI) = (NIR - SWIR16) / (NIR + SWIR16)
+    - Normalized Burn Ratio (NBR) = (NIR - SWIR22) / (NIR + SWIR22)
+    - Normalized Burn Ratio 2 (NBR2) = (SWIR16 – SWIR22) / (SWIR16 + SWIR22)
+    - Normalized Difference Water Index (NDWI) = (NIR - SWIR16) / (NIR + SWIR16)
+    - Normalized Difference Built-up Index (NDBI) = (SWIR16 - NIR) / (SWIR16 + NIR)"""
 
     width = np.shape(band_1)[0]; height = np.shape(band_1)[1]
     
@@ -159,7 +159,7 @@ def generate_savi(mask, red, nir, L_savi = 0.5):
     savi = np.zeros((height, width), dtype=datatype)
     savi = np.where(mask, nodata, ((nir - red) / (nir + red + L_savi) * (1 + L_savi)) / scale_factor)
     
-    print('savi', np.nanmin(savi), np.nanmax(savi))
+    #print('savi', np.nanmin(savi), np.nanmax(savi))
     
     savi_tr = np.where(mask,nodata,truncate_nodata(savi,range_min,range_max)).astype(datatype)
     print('savi_tr', np.nanmin(savi_tr), np.nanmax(savi_tr))
@@ -174,7 +174,7 @@ def generate_msavi(mask, red, nir):
     msavi = np.zeros((height, width), dtype=datatype)
     msavi = np.where(mask, nodata, ((2*nir + 1 - np.sqrt((2*nir + 1)**2 - 8*(nir - red))) * 0.5) / scale_factor)
     
-    print('msavi', np.nanmin(msavi), np.nanmax(msavi))
+    #print('msavi', np.nanmin(msavi), np.nanmax(msavi))
     
     msavi_tr = np.where(mask,nodata,truncate_nodata(msavi,range_min,range_max)).astype(datatype)
     print('msavi_tr', np.nanmin(msavi_tr), np.nanmax(msavi_tr))
