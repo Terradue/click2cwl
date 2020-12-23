@@ -19,20 +19,11 @@ logging.basicConfig(stream=sys.stderr,
                context_settings=dict(
                    ignore_unknown_options=True,
                    allow_extra_args=True, ))
-@click.option('--input_reference', '-i', 'input_reference', type=click.Path())
+@click.option('--input_reference', '-i', 'input_reference', type=click.Path(), required=True)
 @click.option('--aoi', '-a', 'aoi', help='help for the area of interest', default=None, type=click.STRING)
 @click.pass_context
 def entry(ctx, **kwargs):
     extra_params = {ctx.args[i][2:]: ctx.args[i + 1] for i in range(0, len(ctx.args), 2)}
-    """
-    print(ctx.command.params[1])
-    print(type(ctx.command.params[0].type))
-    print(ctx.command.params[0].type)
-    print(type(ctx.command.params[0].type) == click.Path)
-
-    print(ctx.command.params[1].type)
-    print(ctx.command.params[1].type == click.STRING)
-    """
 
     requirement_key_and_value = [x.strip() for x in extra_params['requirement'].split('=')]
     requirement = {requirement_key_and_value[0]: requirement_key_and_value[1]}

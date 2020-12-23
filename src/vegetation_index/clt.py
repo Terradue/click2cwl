@@ -16,8 +16,8 @@ class CommandLineTool:
         key_list = list(ctx2cwl.params)
         for i in range(len(key_list)):
             self.set_inputs({'inp' + str(i + 1): {
-                'inputBinding': {'position': i+1, 'prefix': "--" + str(key_list[i])},
-                'type': self.get_type(ctx2cwl.command.params[i].type)}})
+                'inputBinding': {'position': i + 1, 'prefix': "--" + str(key_list[i])},
+                'type': self.get_type(ctx2cwl.command.params[i])}})
 
         if docker is not None:
             self._clt_class['hints'] = {'DockerRequirement': {'dockerPull': self.docker}}
@@ -41,21 +41,36 @@ class CommandLineTool:
         self._clt_class['requirements'] = {'ResourceRequirement': self.requirements if self.requirements else {},
                                            'EnvVarRequirement': {'envDef': env_vars}}
 
-    def type_converter(self, ctx):
-
-        if isinstance(ctx, str):
-            return "string"
-
-    def get_type(self, ctx_type):
-        if type(ctx_type) == click.Path:
+    def get_type(self, ctx):
+        if type(ctx.type) == click.Path:
+            if ctx.multiple and ctx.required:
+                return 'Directory[]'
+            elif not ctx.required:
+                return 'Directory?'
             return 'Directory'
 
-        if type(ctx_type) == click.File:
+        if type(ctx.type) == click.File:
+            if ctx.multiple and ctx.required:
+                return 'File[]'
+            elif not ctx.required:
+                return 'File?'
             return 'File'
 
-        if ctx_type == click.STRING:
+        if ctx.type == click.STRING:
+            if ctx.multiple and ctx.required:
+                return 'String[]'
+            elif not ctx.required:
+                return 'String?'
             return 'String'
+        """
+        if ctx.type == click.Choice:
 
+            if ctx.multiple and ctx.required:
+                return 'enum[]'
+            elif not ctx.required:
+                return 'enum?'
+            return 'enum'
+        """
     def set_inputs(self, inputs):
         if 'inputs' in self._clt_class:
             self._clt_class['inputs'].append(inputs)
