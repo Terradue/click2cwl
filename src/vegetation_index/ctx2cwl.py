@@ -13,6 +13,9 @@ class CtxCWL:
     def is_file(self, param):
         return isinstance(param.type, click.types.File)
 
+    def is_str(self, param):
+        return isinstance(param.type, click.types.STRING)
+
     def is_option(self, param):
         return isinstance(param, click.Option)
 

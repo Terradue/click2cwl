@@ -1,4 +1,7 @@
 import os
+
+import click
+
 from .ctx2cwl import CtxCWL
 
 
@@ -6,20 +9,15 @@ class CommandLineTool:
 
     def __init__(self, ctx2cwl, docker=None, requirements=None):
         self._clt_class = dict()
-        # self.signature = signature
-        # self.executable = ctx2cwl.command
         self.docker = docker
         self.requirements = requirements
-
         self._clt_class['id'] = 'clt'
 
-        ###########
         key_list = list(ctx2cwl.params)
         for i in range(len(key_list)):
             self.set_inputs({'inp' + str(i + 1): {
-                'inputBinding': {'position': i, 'prefix': "--" + str(key_list[i])},
-                'type': self.type_converter(ctx2cwl.params[key_list[i]])}})
-        ###########
+                'inputBinding': {'position': i+1, 'prefix': "--" + str(key_list[i])},
+                'type': self.get_type(ctx2cwl.command.params[i].type)}})
 
         if docker is not None:
             self._clt_class['hints'] = {'DockerRequirement': {'dockerPull': self.docker}}
@@ -47,6 +45,16 @@ class CommandLineTool:
 
         if isinstance(ctx, str):
             return "string"
+
+    def get_type(self, ctx_type):
+        if type(ctx_type) == click.Path:
+            return 'Directory'
+
+        if type(ctx_type) == click.File:
+            return 'File'
+
+        if ctx_type == click.STRING:
+            return 'String'
 
     def set_inputs(self, inputs):
         if 'inputs' in self._clt_class:
