@@ -21,11 +21,14 @@ logging.basicConfig(stream=sys.stderr,
 def entry(ctx, **kwargs):
     extra_params = {ctx.args[i][2:]: ctx.args[i + 1] for i in range(0, len(ctx.args), 2)}
     print(ctx.params)
+    print(ctx.command.params)
+    print(type(ctx.command.params[0].type))
+    print(type(ctx.command.params[0].type) == click.Path)
 
     docker = None
     requirement = None
     env = None
-    scatter = False
+    scatter = None
 
     if 'requirement' in extra_params.keys():
         requirement = get_key_and_value_of_extra_params(extra_params['requirement'])
@@ -34,7 +37,7 @@ def entry(ctx, **kwargs):
     if 'docker' in extra_params.keys():
         docker = extra_params['docker']
     if 'scatter' in extra_params.keys():
-        scatter = True
+        scatter = get_key_and_value_of_extra_params(extra_params['scatter'])
 
     cwl_object = CwlCreator(ctx, docker=docker, requirements=requirement, env=env, scatter=scatter)
     if 'dump' in extra_params.keys():

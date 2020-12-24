@@ -43,7 +43,7 @@ class CwlCreator:
             self._clt_class['requirements'] = {'ResourceRequirement': requirements if requirements else {},
                                                'EnvVarRequirement': {'envDef': [env_vars, env]}}
 
-    def create_workflow_class(self, ctx, scatter=False):
+    def create_workflow_class(self, ctx, scatter=None):
         self._workflow_class['class'] = 'Workflow'
         self._workflow_class['doc'] = ctx.command.help
         self._workflow_class['label'] = ctx.command.get_short_help_str()
@@ -66,8 +66,14 @@ class CwlCreator:
 
         self._workflow_class['cwlVersion'] = 'v1.0'
 
-        if scatter:
-            self._workflow_class['requirements'] = {'class': 'ScatterFeatureRequirement'}
+        if scatter is not None:
+            resource_requirements = list()
+            resource_requirements.append({'class': 'ScatterFeatureRequirement'})
+            for key in scatter.keys():
+                resource_requirements.append({key: scatter[key]})
+
+            self._workflow_class['requirements'] = resource_requirements
+
             self._workflow_class['steps']['node_1']['scatter'] = 'inp1'
             self._workflow_class['steps']['node_1']['scatterMethod'] = 'dotproduct'
 
@@ -78,15 +84,16 @@ class CwlCreator:
                 yaml.dump(self._workflow_class, file)
                 file.close()
         elif type_of_file == 'params':
+            """
+            self.ctx.commands.params
+            for i in range(len(self.key_list)):
+                if self.get_input_type(self.ctx.command.params[i]) == click.Path or self.get_input_type(self.ctx.command.params[i]) == click.File:
+                    print("hjaha")
+                    #ctx.command.params
+            """
             with open(self.ctx.command_path + '.yml', 'w') as file:
                 yaml.dump(self.ctx.params, file)
                 file.close()
-
-    def get_workflow(self):
-        return self._workflow_class
-
-    def get_clt(self):
-        return self._clt_class
 
     def get_input_type(self, ctx):
         if type(ctx.type) == click.Path:
@@ -123,3 +130,9 @@ class CwlCreator:
         if 'PREFIX' in os.environ:
             path = ':'.join([os.path.join(os.environ['PREFIX'], 'bin'), path])
         return path
+
+    def get_workflow(self):
+        return self._workflow_class
+
+    def get_clt(self):
+        return self._clt_class
