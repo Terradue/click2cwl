@@ -1,12 +1,7 @@
-import os
 import sys
 import logging
 import click
-
-from .ctx2cwl import CtxCWL
-from .clt import CommandLineTool
-from .wf import Workflow
-from .dump import dump_file
+from .cwl_constructor import CwlCreator
 
 logging.basicConfig(stream=sys.stderr,
                     level=logging.DEBUG,
@@ -21,20 +16,37 @@ logging.basicConfig(stream=sys.stderr,
                    allow_extra_args=True, ))
 @click.option('--input_reference', '-i', 'input_reference', type=click.Path(), required=True)
 @click.option('--aoi', '-a', 'aoi', help='help for the area of interest', default=None, type=click.STRING)
+@click.option('--file', '-f', 'conf_file', help='help for the conf file', type=click.File())
 @click.pass_context
 def entry(ctx, **kwargs):
     extra_params = {ctx.args[i][2:]: ctx.args[i + 1] for i in range(0, len(ctx.args), 2)}
+    print(ctx.params)
 
-    requirement_key_and_value = [x.strip() for x in extra_params['requirement'].split('=')]
-    requirement = {requirement_key_and_value[0]: requirement_key_and_value[1]}
+    docker = None
+    requirement = None
+    env = None
+    scatter = False
 
-    clt_dict = CommandLineTool(ctx, docker=extra_params['docker'], requirements=requirement).get_clt()
-    wf_dict = Workflow(ctx).get_workflow()
+    if 'requirement' in extra_params.keys():
+        requirement = get_key_and_value_of_extra_params(extra_params['requirement'])
+    if 'env' in extra_params.keys():
+        env = get_key_and_value_of_extra_params(extra_params['env'])
+    if 'docker' in extra_params.keys():
+        docker = extra_params['docker']
+    if 'scatter' in extra_params.keys():
+        scatter = True
 
+    cwl_object = CwlCreator(ctx, docker=docker, requirements=requirement, env=env, scatter=scatter)
     if 'dump' in extra_params.keys():
-        dump_file(ctx, extra_params['dump'], clt_dict, wf_dict)
+        cwl_object.dump_file(extra_params['dump'])
 
     sys.exit(0)
+
+
+def get_key_and_value_of_extra_params(params):
+    params_key_and_value = [x.strip() for x in params.split('=')]
+    param_dict = {params_key_and_value[0]: params_key_and_value[1]}
+    return param_dict
 
 
 if __name__ == '__main__':

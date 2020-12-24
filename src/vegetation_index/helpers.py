@@ -15,7 +15,6 @@ def set_env():
 
 
 def fix_asset_href(uri):
-    # print('-', uri)
     parsed = urlparse(uri)
 
     if parsed.scheme.startswith('http'):
@@ -87,41 +86,6 @@ def normalized_difference(band_1, band_2):
     norm_diff = 10000 * ((band_1 - band_2) / (band_1 + band_2))
 
     return norm_diff
-
-
-"""
-def generate_evi(blue, green, red, nir, C1=6, C2=7.5, L_evi=1):
-    #C1 = 6; C2 = 7.5; L_evi = 1 # these are values used in S2 example here: https://custom-scripts.sentinel-hub.com/sentinel-2/evi/#. 
-    
-    width = np.shape(blue.shape)[0] # check shape. not sure this is correct.
-    height = np.shape(blue)[1]
-
-    evi = np.zeros((height, width), dtype=np.uint)
-    
-    evi = green*( (nir - red) / (nir + C1*red - C2*blue + L_evi) )
-    
-    return evi
-    
-def generate_savi(red, nir, L_savi = 0.5): 
-    
-    width = np.shape(red.shape)[0] # check shape. not sure this is correct.
-    height = np.shape(red)[1]
-
-    savi = np.zeros((height, width), dtype=np.uint)
-    
-    savi = ((nir - red) / (nir + red + L_savi)) * (1 + L_savi)
-    return savi
-
-def generate_msavi(red, nir):
-    
-    width = np.shape(red.shape)[0] # check shape. not sure this is correct.
-    height = np.shape(red)[1]
-
-    msavi = np.zeros((height, width), dtype=np.uint)
-    
-    msavi = (2*nir + 1 – np.sqrt((2 * nir + 1)**2 – 8*(nir - red))) / 2
-    return msavi
-"""
 
 
 def cog(input_tif, output_tif, no_data=None):

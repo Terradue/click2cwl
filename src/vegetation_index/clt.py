@@ -2,18 +2,16 @@ import os
 
 import click
 
-from .ctx2cwl import CtxCWL
-
 
 class CommandLineTool:
 
-    def __init__(self, ctx2cwl, docker=None, requirements=None):
+    def __init__(self, ctx2cwl, docker=None, requirements=None, env=None):
         self._clt_class = dict()
         self.docker = docker
         self.requirements = requirements
         self._clt_class['id'] = 'clt'
 
-        key_list = list(ctx2cwl.params)
+        key_list = [keys for keys in ctx2cwl.params.keys() if keys != 'conf_file']
         for i in range(len(key_list)):
             self.set_inputs({'inp' + str(i + 1): {
                 'inputBinding': {'position': i + 1, 'prefix': "--" + str(key_list[i])},
@@ -38,8 +36,12 @@ class CommandLineTool:
         if 'PREFIX' in os.environ:
             env_vars['PREFIX'] = os.environ['PREFIX']
 
-        self._clt_class['requirements'] = {'ResourceRequirement': self.requirements if self.requirements else {},
-                                           'EnvVarRequirement': {'envDef': env_vars}}
+        if env is None:
+            self._clt_class['requirements'] = {'ResourceRequirement': self.requirements if self.requirements else {},
+                                               'EnvVarRequirement': {'envDef': env_vars}}
+        else:
+            self._clt_class['requirements'] = {'ResourceRequirement': self.requirements if self.requirements else {},
+                                               'EnvVarRequirement': {'envDef': [env_vars, env]}}
 
     def get_type(self, ctx):
         if type(ctx.type) == click.Path:
@@ -62,15 +64,7 @@ class CommandLineTool:
             elif not ctx.required:
                 return 'String?'
             return 'String'
-        """
-        if ctx.type == click.Choice:
 
-            if ctx.multiple and ctx.required:
-                return 'enum[]'
-            elif not ctx.required:
-                return 'enum?'
-            return 'enum'
-        """
     def set_inputs(self, inputs):
         if 'inputs' in self._clt_class:
             self._clt_class['inputs'].append(inputs)
