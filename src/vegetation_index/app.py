@@ -15,20 +15,21 @@ logging.basicConfig(stream=sys.stderr,
                    ignore_unknown_options=True,
                    allow_extra_args=True, ))
 @click.option('--input_reference', '-i', 'input_reference', type=click.Path(), required=True)
-@click.option('--aoi', '-a', 'aoi', help='help for the area of interest', default=None, type=click.STRING)
-@click.option('--file', '-f', 'conf_file', help='help for the conf file', type=click.File())
+@click.option('--aoi', '-a', 'aoi', help='help for the area of interest', default=None)
+@click.option('--file', '-f', 'conf_file', help='help for the conf file', type=click.File(mode='wb'))
 @click.pass_context
 def entry(ctx, **kwargs):
     extra_params = {ctx.args[i][2:]: ctx.args[i + 1] for i in range(0, len(ctx.args), 2)}
-    print(ctx.params)
-    print(ctx.command.params)
-    print(type(ctx.command.params[0].type))
-    print(type(ctx.command.params[0].type) == click.Path)
-
     docker = None
     requirement = None
     env = None
     scatter = None
+    conf_file = None
+
+    #print(ctx.params)
+    #print(ctx.params['aoi'])
+    #print(conf_file)
+    #print(ctx.command.params)
 
     if 'requirement' in extra_params.keys():
         requirement = get_key_and_value_of_extra_params(extra_params['requirement'])
@@ -38,8 +39,10 @@ def entry(ctx, **kwargs):
         docker = extra_params['docker']
     if 'scatter' in extra_params.keys():
         scatter = get_key_and_value_of_extra_params(extra_params['scatter'])
+    if (ctx.params['conf_file'] is not None) and ('conf_file' in ctx.params.keys()):
+        conf_file = ctx.params['conf_file']
 
-    cwl_object = CwlCreator(ctx, docker=docker, requirements=requirement, env=env, scatter=scatter)
+    cwl_object = CwlCreator(ctx, docker=docker, requirements=requirement, env=env, scatter=scatter, conf_file=conf_file)
     if 'dump' in extra_params.keys():
         cwl_object.dump_file(extra_params['dump'])
 

@@ -60,10 +60,10 @@ class CommandLineTool:
 
         if ctx.type == click.STRING:
             if ctx.multiple and ctx.required:
-                return 'String[]'
+                return 'string[]'
             elif not ctx.required:
-                return 'String?'
-            return 'String'
+                return 'string?'
+            return 'string'
 
     def set_inputs(self, inputs):
         if 'inputs' in self._clt_class:
