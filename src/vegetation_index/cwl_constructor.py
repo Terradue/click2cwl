@@ -6,30 +6,33 @@ import errno
 
 
 class CwlCreator:
-    def __init__(self, ctx, docker=None, requirements=None, env=None, scatter=False, conf_file=None):
+
+    def __init__(self, ctx, docker=None, requirements=None, env=None, scatter=False):
         self._full_cwl_content = dict()
-        self._full_cwl_content['$graph'] = []
-        self._full_cwl_content['cwlVersion'] = 'v1.0'
         self._clt_class = dict()
         self._workflow_class = dict()
-        self.key_list = [keys for keys in ctx.params.keys() if keys != 'conf_file']
+        self._full_cwl_content['$graph'] = []
+        self._full_cwl_content['cwlVersion'] = 'v1.0'
+        self.option_command_names = [k for k in ctx.params.keys() if ctx.params[k] is not None]
+        self.option_list = ctx.command.params
         self.ctx = ctx
         self.create_clt(self.ctx, docker, requirements, env)
         self.create_workflow_class(self.ctx, scatter)
 
     def create_clt(self, ctx, docker, requirements, env):
         self._clt_class['id'] = 'clt'
-        for i in range(len(self.key_list)):
+
+        for i in range(len(self.option_command_names)):
             self.set_clt_inputs({'inp' + str(i + 1): {
-                'inputBinding': {'position': i + 1, 'prefix': "--" + str(self.key_list[i])},
-                'type': self.get_input_type(ctx.command.params[i])}})
+                'inputBinding': {'position': i + 1, 'prefix': "--" + str(self.option_command_names[i])},
+                'type': self.get_input_type(self.option_list[i])}})
         if docker is not None:
             self._clt_class['hints'] = {'DockerRequirement': {'dockerPull': docker}}
 
         self._clt_class['baseCommand'] = ctx.command_path
         self._clt_class['class'] = 'CommandLineTool'
-        self._clt_class['stdout'] = 'std.out'
         self._clt_class['stderr'] = 'std.err'
+        self._clt_class['stdout'] = 'std.out'
         self._clt_class['outputs'] = {'results': {'outputBinding': {'glob': '.'},
                                                   'type': 'Directory'}}
         self._clt_class['stdout'] = 'std.out'
@@ -54,21 +57,25 @@ class CwlCreator:
         self._workflow_class['doc'] = ctx.command.help
         self._workflow_class['label'] = ctx.command.get_short_help_str()
         self._workflow_class['id'] = ctx.command_path
-        self._workflow_class['inputs'] = {'aoi': {}, 'input_reference': {}}
+        self._workflow_class['inputs'] = {}
 
-        for input_idx in range(len(self.key_list)):
-            self._workflow_class['inputs'][self.key_list[input_idx]] = {'doc': self.key_list[input_idx] + " doc",
-                                                                        'label': self.key_list[input_idx] + " label",
-                                                                        'type': self.get_input_type(ctx.command.params[
-                                                                                                        self.key_list.index(
-                                                                                                            self.key_list[
-                                                                                                                input_idx])])}
+        for input_idx in range(len(self.option_command_names)):
+            if self.option_command_names[input_idx] != 'conf_file':
+                self._workflow_class['inputs'][self.option_command_names[input_idx]] = \
+                    {'doc': str(self.option_command_names[input_idx]) + " doc",
+                     'label': str(self.option_command_names[input_idx]) + " label",
+                     'type': str(self.get_input_type(self.option_list[self.option_command_names.index(self.option_command_names[input_idx])]))}
+
+            if self.option_command_names[input_idx] == 'conf_file':
+                self._workflow_class['inputs'][self.option_command_names[input_idx]] = \
+                    {'type': str(
+                        self.get_input_type(self.option_list[self.option_command_names.index(self.option_command_names[input_idx])]))}
 
         self._workflow_class['outputs'] = {'id': 'wf_outputs', 'outputSource': 'node_1/results', 'type': 'Directory'}
 
         input_counter = dict()
-        for i in range(len(self.key_list)):
-            input_counter['inp' + str(i + 1)] = str(self.key_list[i])
+        for i in range(len(self.option_command_names)):
+            input_counter['inp' + str(i + 1)] = str(self.option_command_names[i])
         self._workflow_class['steps'] = {
             'node_1': {'in': input_counter, 'out': 'results', 'run': '#clt'}}
 
@@ -90,49 +97,25 @@ class CwlCreator:
             with open(self.ctx.command_path + '.cwl', 'w') as file:
                 yaml.dump(self._full_cwl_content, file)
                 file.close()
+
         elif type_of_file == 'params':
-            self.write_conf()
             with open(self.ctx.command_path + '.yml', 'w') as file:
-
-                yaml.dump(self.ctx.params, file)
-                # yaml.dump(self.write_conf(), file)
+                for i in range(len(self.option_command_names)):
+                    if "File" in self.get_input_type(self.option_list[i]):
+                        yaml.dump({self.option_command_names[i]:{'class':self.get_input_type(self.option_list[i]), 
+                        'path':self.ctx.params[self.option_command_names[i]]}})
+                    else:
+                        yaml.dump({self.option_command_names[i]:self.ctx.params[self.option_command_names[i]]}, 
+                        file) 
                 file.close()
-
+            
+    
     def write_conf(self):
-
-        if self.ctx.params['conf_file'] is not None:
-            full_path = self.ctx.params['conf_file'].name
-            """
-            dir_name = full_path.rsplit('/', 1)[0]
-            filename = full_path.split("/")[-1]
-            """
-
-            """
-            if not os.path.exists(os.path.dirname(dir_name)):
-                try:
-                    os.makedirs(os.path.dirname(dir_name))
-                except OSError as exc:  # Guard against race condition
-                    if exc.errno != errno.EEXIST:
-                        raise
-            """
-
-            # with open(full_path, 'w') as ff:
-            #   yaml.dump(self.ctx.params, ff)
-            #  ff.close()
-
-            f = open("demofile2.txt", "w")
-            f.write("Now the file has more content!")
-            f.close()
-
-            """
-            if self.ctx.command.params[list(self.ctx.params).index('conf_file')].multiple:
-                return {'class': 'File[]', 'path': str(filename)}
-            else:
-                return {'class': 'File', 'path': str(filename)}
+        if self.option_list[list(self.ctx.params).index('conf_file')].multiple:
+            return {'class': 'File[]', 'path': str(self.ctx.params['conf_file'].name)}
         else:
-            return
-            """
-
+            return {'class': 'File', 'path': str(self.ctx.params['conf_file'].name)}
+    
     def get_input_type(self, ctx):
         if type(ctx.type) == click.Path:
             if ctx.multiple and ctx.required:

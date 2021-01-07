@@ -9,14 +9,16 @@ logging.basicConfig(stream=sys.stderr,
                     datefmt='%Y-%m-%dT%H:%M:%S')
 
 
-@click.command(short_help='hello I\'m the label of Workflow class',
-               help='hello I\'m the doc of Workflow class',
+@click.command(short_help='hello Im the label of Workflo class',
+               help='hello Im the doc of Workflo class',
                context_settings=dict(
                    ignore_unknown_options=True,
                    allow_extra_args=True, ))
+
 @click.option('--input_reference', '-i', 'input_reference', type=click.Path(), required=True)
 @click.option('--aoi', '-a', 'aoi', help='help for the area of interest', default=None)
-@click.option('--file', '-f', 'conf_file', help='help for the conf file', type=click.File(mode='wb'))
+@click.option('--file', '-f', 'conf_file', help='help for the conf file', type=click.Path())
+# @click.option('--mode', type=click.Choice(['local', 'ftp']), required=True)
 @click.pass_context
 def entry(ctx, **kwargs):
     extra_params = {ctx.args[i][2:]: ctx.args[i + 1] for i in range(0, len(ctx.args), 2)}
@@ -24,12 +26,17 @@ def entry(ctx, **kwargs):
     requirement = None
     env = None
     scatter = None
-    conf_file = None
 
-    #print(ctx.params)
-    #print(ctx.params['aoi'])
-    #print(conf_file)
-    #print(ctx.command.params)
+    print(ctx.params)
+    print(ctx.params.keys())
+    print(ctx.command.params)
+    print(ctx.params['conf_file'])
+    #print(ctx.params['conf_file'].name)
+    #print(ctx.params['conf_file'].name)
+    #print(ctx.params['conf_file'] is None)
+    # print(ctx.params['aoi'])
+    # print(conf_file)
+    # print(ctx.command.params)
 
     if 'requirement' in extra_params.keys():
         requirement = get_key_and_value_of_extra_params(extra_params['requirement'])
@@ -39,10 +46,8 @@ def entry(ctx, **kwargs):
         docker = extra_params['docker']
     if 'scatter' in extra_params.keys():
         scatter = get_key_and_value_of_extra_params(extra_params['scatter'])
-    if (ctx.params['conf_file'] is not None) and ('conf_file' in ctx.params.keys()):
-        conf_file = ctx.params['conf_file']
 
-    cwl_object = CwlCreator(ctx, docker=docker, requirements=requirement, env=env, scatter=scatter, conf_file=conf_file)
+    cwl_object = CwlCreator(ctx, docker=docker, requirements=requirement, env=env, scatter=scatter)
     if 'dump' in extra_params.keys():
         cwl_object.dump_file(extra_params['dump'])
 
