@@ -14,11 +14,10 @@ logging.basicConfig(stream=sys.stderr,
                context_settings=dict(
                    ignore_unknown_options=True,
                    allow_extra_args=True, ))
-
 @click.option('--input_reference', '-i', 'input_reference', type=click.Path(), required=True)
 @click.option('--aoi', '-a', 'aoi', help='help for the area of interest', default=None)
 @click.option('--file', '-f', 'conf_file', help='help for the conf file', type=click.Path())
-# @click.option('--mode', type=click.Choice(['local', 'ftp']), required=True)
+#@click.option('--file', '-f', 'conf_file', help='help for the conf file', type=click.Choice(['local', 'ftp']))
 @click.pass_context
 def entry(ctx, **kwargs):
     extra_params = {ctx.args[i][2:]: ctx.args[i + 1] for i in range(0, len(ctx.args), 2)}
@@ -27,17 +26,10 @@ def entry(ctx, **kwargs):
     env = None
     scatter = None
 
-    print(ctx.params)
-    print(ctx.params.keys())
-    print(ctx.command.params)
-    print(ctx.params['conf_file'])
-    #print(ctx.params['conf_file'].name)
-    #print(ctx.params['conf_file'].name)
-    #print(ctx.params['conf_file'] is None)
-    # print(ctx.params['aoi'])
-    # print(conf_file)
-    # print(ctx.command.params)
+    #print(ctx.command.params[2].type)
+    #print(ctx.command.params[2].type.choices[:])
 
+    
     if 'requirement' in extra_params.keys():
         requirement = get_key_and_value_of_extra_params(extra_params['requirement'])
     if 'env' in extra_params.keys():
@@ -59,6 +51,6 @@ def get_key_and_value_of_extra_params(params):
     param_dict = {params_key_and_value[0]: params_key_and_value[1]}
     return param_dict
 
-
+    
 if __name__ == '__main__':
     entry()

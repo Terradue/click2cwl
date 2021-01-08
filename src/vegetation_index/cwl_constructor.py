@@ -23,9 +23,14 @@ class CwlCreator:
         self._clt_class['id'] = 'clt'
 
         for i in range(len(self.option_command_names)):
-            self.set_clt_inputs({'inp' + str(i + 1): {
-                'inputBinding': {'position': i + 1, 'prefix': "--" + str(self.option_command_names[i])},
-                'type': self.get_input_type(self.option_list[i])}})
+            if "enum" in self.get_input_type(self.option_list[i]):
+                self.set_clt_inputs({'inp' + str(i + 1): {
+                    'inputBinding': {'position': i + 1, 'prefix': "--" + str(self.option_command_names[i])},
+                    'type': self.get_input_type(self.option_list[i]),'symbols':self.option_list[i].type.choices[:]}})
+            else:
+                self.set_clt_inputs({'inp' + str(i + 1): {
+                    'inputBinding': {'position': i + 1, 'prefix': "--" + str(self.option_command_names[i])},
+                    'type': self.get_input_type(self.option_list[i])}})
         if docker is not None:
             self._clt_class['hints'] = {'DockerRequirement': {'dockerPull': docker}}
 
@@ -137,6 +142,13 @@ class CwlCreator:
             elif not ctx.required:
                 return 'string?'
             return 'string'
+
+        if type(ctx.type) == click.Choice:
+            if ctx.multiple and ctx.required:
+                return 'enum[]'
+            elif not ctx.required:
+                return 'enum?'
+            return 'enum'
 
     def set_clt_inputs(self, inputs):
         if 'inputs' in self._clt_class:
