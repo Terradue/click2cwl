@@ -24,8 +24,6 @@ logging.basicConfig(stream=sys.stderr,
 def entry(ctx, **kwargs):
     extra_params = {ctx.args[i][2:]: ctx.args[i + 1] for i in range(0, len(ctx.args), 2)}
     docker = requirement = env = scatter = None
-
-    print("Hello")
     f = io.StringIO(str(ctx.command.params[2].name))
     f.close()
 
