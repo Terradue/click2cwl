@@ -3,6 +3,8 @@ import logging
 import click
 from .cwl_constructor import CwlCreator
 
+import io
+
 logging.basicConfig(stream=sys.stderr,
                     level=logging.DEBUG,
                     format='%(asctime)s %(levelname)-8s %(message)s',
@@ -16,20 +18,18 @@ logging.basicConfig(stream=sys.stderr,
                    allow_extra_args=True, ))
 @click.option('--input_reference', '-i', 'input_reference', type=click.Path(), required=True)
 @click.option('--aoi', '-a', 'aoi', help='help for the area of interest', default=None)
-@click.option('--file', '-f', 'conf_file', help='help for the conf file', type=click.Path())
-#@click.option('--file', '-f', 'conf_file', help='help for the conf file', type=click.Choice(['local', 'ftp']))
+@click.option('--file', '-f', 'conf_file', help='help for the conf file', type=click.File(mode='w'))
+@click.option('--mode', '-m', 'mode', type=click.Choice(['local', 'ftp']), required=False)
 @click.pass_context
 def entry(ctx, **kwargs):
     extra_params = {ctx.args[i][2:]: ctx.args[i + 1] for i in range(0, len(ctx.args), 2)}
-    docker = None
-    requirement = None
-    env = None
-    scatter = None
+    docker = requirement = env = scatter = None
 
-    #print(ctx.command.params[2].type)
-    #print(ctx.command.params[2].type.choices[:])
+    print("Hello")
+    f = io.StringIO(str(ctx.command.params[2].name))
+    f.close()
 
-    
+
     if 'requirement' in extra_params.keys():
         requirement = get_key_and_value_of_extra_params(extra_params['requirement'])
     if 'env' in extra_params.keys():
@@ -41,10 +41,9 @@ def entry(ctx, **kwargs):
 
     cwl_object = CwlCreator(ctx, docker=docker, requirements=requirement, env=env, scatter=scatter)
     if 'dump' in extra_params.keys():
-        cwl_object.dump_file(extra_params['dump'])
+        cwl_object.dump(extra_params['dump'])
 
     sys.exit(0)
-
 
 def get_key_and_value_of_extra_params(params):
     params_key_and_value = [x.strip() for x in params.split('=')]
