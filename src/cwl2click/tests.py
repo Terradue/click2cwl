@@ -10,14 +10,14 @@ from .paramexport import ParamExport
                context_settings=dict(
                    ignore_unknown_options=True,
                    allow_extra_args=True, ))
-@click.option('--input_reference', '-i', 'input_reference', type=click.Path(), help='this input reference', required=True)
+@click.option('--input_reference', '-i', 'input_reference', type=click.Path(), help='this input reference', multiple=True, required=True)
 @click.option('--aoi', '-a', 'aoi', help='help for the area of interest', default='POLYGON()', required=False)
 @click.option('--file', '-f', 'conf_file', help='help for the conf file', type=click.File(mode='w'))
 @click.option('--mode', '-m', 'mode', type=click.Choice(['local', 'ftp']), required=False)
 @click.pass_context
 def test1(ctx, **kwargs):
 
-    click2cwl = Click2CWL(ctx, kwargs)
+    click2cwl = Click2CWL(ctx)
 
     if click2cwl.extra_params:   
         
@@ -51,9 +51,9 @@ def test1(ctx, **kwargs):
               multiple=True,
               default=None)
 @click.pass_context
-def test2(ctx, **kwargs):
+def test2(ctx, input_reference, aoi):
 
-    click2cwl = Click2CWL(ctx, kwargs)
+    click2cwl = Click2CWL(ctx)
 
     if click2cwl.extra_params:   
         
@@ -66,6 +66,6 @@ def test2(ctx, **kwargs):
             ParamExport(click2cwl).dump()
 
     print('business as usual')
-    print(kwargs)        
+    print(input_reference, aoi)        
 
     sys.exit(0)

@@ -26,7 +26,8 @@ $graph:
         position: 4
         prefix: --mode
       type:
-        symbols: &id001
+      - 'null'
+      - symbols: &id001
         - local
         - ftp
         type: enum
@@ -66,7 +67,8 @@ $graph:
       doc: null
       label: null
       type:
-        symbols: *id001
+      - 'null'
+      - symbols: *id001
         type: enum
   label: hello Im the label of Workflow class
   outputs:

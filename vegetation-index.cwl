@@ -10,7 +10,7 @@ $graph:
       inputBinding:
         position: 1
         prefix: --input_reference
-      type: Directory
+      type: Directory[]
     aoi:
       inputBinding:
         position: 2
@@ -53,7 +53,7 @@ $graph:
     input_reference:
       doc: this input reference
       label: this input reference
-      type: Directory
+      type: Directory[]
     aoi:
       doc: help for the area of interest
       label: help for the area of interest

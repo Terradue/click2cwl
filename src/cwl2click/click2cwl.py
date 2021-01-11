@@ -5,9 +5,8 @@ valid_requirements = ['coresMin', 'coresMax', 'ramMin', 'ramMax']
 
 class Click2CWL(object):
 
-    def __init__(self, ctx, kwargs):
+    def __init__(self, ctx):
 
-        self.params = kwargs
         self.ctx = ctx
         self.extra_params = self._get_extra_params()
         self.executable = self.ctx.command_path
