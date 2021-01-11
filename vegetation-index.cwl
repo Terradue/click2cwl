@@ -3,32 +3,33 @@ $graph:
   class: CommandLineTool
   hints:
     DockerRequirement:
-      dockerPull: veg-index:0.1
+      dockerPull: aaa
   id: clt
   inputs:
-  - inp1:
+    input_reference:
       inputBinding:
         position: 1
         prefix: --input_reference
       type: Directory
-  - inp2:
+    aoi:
       inputBinding:
         position: 2
         prefix: --aoi
-      type: string?
-  - inp3:
+      type: string
+    conf_file:
       inputBinding:
         position: 3
-        prefix: --conf_file
-      type: File?
-  - inp4:
+        prefix: --file
+      type: File
+    mode:
       inputBinding:
         position: 4
         prefix: --mode
-      symbols:
-      - local
-      - ftp
-      type: enum
+      type:
+        symbols: &id001
+        - local
+        - ftp
+        type: enum
   outputs:
     results:
       outputBinding:
@@ -37,45 +38,50 @@ $graph:
   requirements:
     EnvVarRequirement:
       envDef:
-      - PATH: /home/farid/anaconda3/bin:/home/farid/anaconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin
-      - test_env: path/to/env
+        PATH: /Applications/miniforge3/envs/env_vi/bin:/Applications/miniforge3/condabin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+        a: '1'
+        b: '2'
     ResourceRequirement:
-      ramMix: '8'
+      ramMax: 1
+      ramMin: 2
   stderr: std.err
   stdout: std.out
 - class: Workflow
-  doc: hello Im the doc of Workflo class
+  doc: hello Im the doc of Workflow class
   id: vegetation-index
   inputs:
-    aoi:
-      doc: aoi doc
-      label: aoi label
-      type: string?
-    conf_file:
-      doc: conf_file doc
-      label: conf_file label
-      type: File?
     input_reference:
-      doc: input_reference doc
-      label: input_reference label
+      doc: this input reference
+      label: this input reference
       type: Directory
+    aoi:
+      doc: help for the area of interest
+      label: help for the area of interest
+      type: string
+    conf_file:
+      doc: help for the conf file
+      label: help for the conf file
+      type: File
     mode:
-      symbols:
-      - local
-      - ftp
-      type: enum
-  label: hello Im the label of Workflo class
+      doc: null
+      label: null
+      type:
+        symbols: *id001
+        type: enum
+  label: hello Im the label of Workflow class
   outputs:
-    id: wf_outputs
-    outputSource: node_1/results
+  - id: wf_outputs
+    outputSource:
+    - step_1/results
     type: Directory
   steps:
-    node_1:
+    step_1:
       in:
-        inp1: input_reference
-        inp2: aoi
-        inp3: conf_file
-        inp4: mode
-      out: results
+        input_reference: input_reference
+        aoi: aoi
+        conf_file: conf_file
+        mode: mode
+      out:
+      - results
       run: '#clt'
 cwlVersion: v1.0

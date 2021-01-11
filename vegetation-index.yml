@@ -1,0 +1,8 @@
+aoi: POLYGON()
+conf_file:
+  class: File
+  path: <value>
+input_reference:
+  class: Directory
+  path: <value>
+mode: <value>

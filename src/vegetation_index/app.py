@@ -1,8 +1,13 @@
 import sys
 import logging
 import click
+from .click2cwl import Click2CWL
 from .cwl_constructor import CwlCreator
-
+from .cwlparam import CWLParam
+from .clt import CommandLineTool
+from .wf import Workflow
+from .cwlexport import CWLExport
+from .paramexport import ParamExport
 import io
 
 logging.basicConfig(stream=sys.stderr,
@@ -11,36 +16,34 @@ logging.basicConfig(stream=sys.stderr,
                     datefmt='%Y-%m-%dT%H:%M:%S')
 
 
-@click.command(short_help='hello Im the label of Workflo class',
-               help='hello Im the doc of Workflo class',
+@click.command(short_help='hello Im the label of Workflow class',
+               help='hello Im the doc of Workflow class',
                context_settings=dict(
                    ignore_unknown_options=True,
                    allow_extra_args=True, ))
-@click.option('--input_reference', '-i', 'input_reference', type=click.Path(), required=True)
-@click.option('--aoi', '-a', 'aoi', help='help for the area of interest', default=None)
+@click.option('--input_reference', '-i', 'input_reference', type=click.Path(), help='this input reference', required=True)
+@click.option('--aoi', '-a', 'aoi', help='help for the area of interest', default='POLYGON()', required=False)
 @click.option('--file', '-f', 'conf_file', help='help for the conf file', type=click.File(mode='w'))
 @click.option('--mode', '-m', 'mode', type=click.Choice(['local', 'ftp']), required=False)
 @click.pass_context
 def entry(ctx, **kwargs):
-    extra_params = {ctx.args[i][2:]: ctx.args[i + 1] for i in range(0, len(ctx.args), 2)}
-    docker = requirement = env = scatter = None
-    f = io.StringIO(str(ctx.command.params[2].name))
-    f.close()
 
+    click2cwl = Click2CWL(ctx, kwargs)
 
-    if 'requirement' in extra_params.keys():
-        requirement = get_key_and_value_of_extra_params(extra_params['requirement'])
-    if 'env' in extra_params.keys():
-        env = get_key_and_value_of_extra_params(extra_params['env'])
-    if 'docker' in extra_params.keys():
-        docker = extra_params['docker']
-    if 'scatter' in extra_params.keys():
-        scatter = get_key_and_value_of_extra_params(extra_params['scatter'])
+    if click2cwl.extra_params:   
+        
+        if click2cwl.extra_params['dump'] == 'cwl':
 
-    cwl_object = CwlCreator(ctx, docker=docker, requirements=requirement, env=env, scatter=scatter)
-    if 'dump' in extra_params.keys():
-        cwl_object.dump(extra_params['dump'])
+            CWLExport(click2cwl).dump()
+        
+        else:
 
+            ParamExport(click2cwl).dump()
+ 
+        sys.exit(0)
+
+    print('business as usual')
+    
     sys.exit(0)
 
 def get_key_and_value_of_extra_params(params):
