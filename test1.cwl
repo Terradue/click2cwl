@@ -1,5 +1,5 @@
 $graph:
-- baseCommand: vegetation-index
+- baseCommand: test1
   class: CommandLineTool
   hints:
     DockerRequirement:
@@ -10,23 +10,24 @@ $graph:
       inputBinding:
         position: 1
         prefix: --input_reference
-      type: Directory[]
+      type: Directory
     aoi:
       inputBinding:
         position: 2
         prefix: --aoi
-      type: string
+      type: string?
     conf_file:
       inputBinding:
         position: 3
         prefix: --file
-      type: File
+      type: File?
     mode:
       inputBinding:
         position: 4
         prefix: --mode
       type:
-        symbols: &id001
+      - 'null'
+      - symbols: &id001
         - local
         - ftp
         type: enum
@@ -38,7 +39,7 @@ $graph:
   requirements:
     EnvVarRequirement:
       envDef:
-        PATH: /Applications/miniforge3/envs/env_vi/bin:/Applications/miniforge3/condabin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+        PATH: /opt/anaconda3/envs/env_click2cwl/bin:/opt/anaconda3/condabin:/Library/Frameworks/Python.framework/Versions/3.6/bin:/Library/Frameworks/Python.framework/Versions/3.7/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
         a: '1'
         b: '2'
     ResourceRequirement:
@@ -48,25 +49,26 @@ $graph:
   stdout: std.out
 - class: Workflow
   doc: hello Im the doc of Workflow class
-  id: vegetation-index
+  id: test1
   inputs:
     input_reference:
       doc: this input reference
       label: this input reference
-      type: Directory[]
+      type: Directory
     aoi:
       doc: help for the area of interest
       label: help for the area of interest
-      type: string
+      type: string?
     conf_file:
       doc: help for the conf file
       label: help for the conf file
-      type: File
+      type: File?
     mode:
       doc: null
       label: null
       type:
-        symbols: *id001
+      - 'null'
+      - symbols: *id001
         type: enum
   label: hello Im the label of Workflow class
   outputs:

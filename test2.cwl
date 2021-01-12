@@ -1,5 +1,5 @@
 $graph:
-- baseCommand: vegetation-index
+- baseCommand: test2
   class: CommandLineTool
   hints:
     DockerRequirement:
@@ -10,26 +10,12 @@ $graph:
       inputBinding:
         position: 1
         prefix: --input_reference
-      type: Directory[]
+      type: Directory
     aoi:
       inputBinding:
         position: 2
         prefix: --aoi
       type: string
-    conf_file:
-      inputBinding:
-        position: 3
-        prefix: --file
-      type: File
-    mode:
-      inputBinding:
-        position: 4
-        prefix: --mode
-      type:
-        symbols: &id001
-        - local
-        - ftp
-        type: enum
   outputs:
     results:
       outputBinding:
@@ -47,28 +33,18 @@ $graph:
   stderr: std.err
   stdout: std.out
 - class: Workflow
-  doc: hello Im the doc of Workflow class
-  id: vegetation-index
+  doc: null
+  id: test2
   inputs:
     input_reference:
-      doc: this input reference
-      label: this input reference
-      type: Directory[]
+      doc: help for input reference
+      label: help for input reference
+      type: Directory
     aoi:
       doc: help for the area of interest
       label: help for the area of interest
       type: string
-    conf_file:
-      doc: help for the conf file
-      label: help for the conf file
-      type: File
-    mode:
-      doc: null
-      label: null
-      type:
-        symbols: *id001
-        type: enum
-  label: hello Im the label of Workflow class
+  label: null
   outputs:
   - id: wf_outputs
     outputSource:
@@ -79,8 +55,6 @@ $graph:
       in:
         input_reference: input_reference
         aoi: aoi
-        conf_file: conf_file
-        mode: mode
       out:
       - results
       run: '#clt'

@@ -1,29 +1,41 @@
-def dockerTag = 'terradue/eoepca-vegetation-index'
-def dockerNewVersion = 1.1
+environment {
+    PATH = "$WORKSPACE/conda/bin:$PATH"
+    CONDA_UPLOAD_TOKEN = credentials('terradue-conda')
+  }
 
 pipeline {
-    agent any
+    agent {
+        docker { image 'conda-build:latest' }
+    }
     stages {
-        stage('Build & Publish Docker') {
+        stage('Test') {
             steps {
-                script {
-                    def app = docker.build(dockerTag, ".")
-                    def mType=getTypeOfVersion(env.BRANCH_NAME)
-                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-fabricebrito') {
-                      app.push("${mType}${dockerNewVersion}")
-                      app.push("${mType}latest")
-                    }
-                }
+                sh '''#!/usr/bin/env bash
+                conda build --version
+                conda --version
+                '''
+            }
+        }
+        stage('Build') {
+            steps {
+                sh '''#!/usr/bin/env bash
+                mkdir -p /home/jovyan/conda-bld/work
+                cd $WORKSPACE
+                mamba build .
+                '''
+            }
+        }
+        stage('Deploy') {            
+            steps { 
+                withCredentials([string(credentialsId: 'terradue-conda', variable: 'ANACONDA_API_TOKEN')]) {
+                sh '''#!/usr/bin/env bash
+                set -x
+                export PACKAGENAME=click2cwl
+                label=main
+                if [ "$GIT_BRANCH" = "develop" ]; then label=dev; fi
+                anaconda --verbose upload --no-progress --force --user Terradue --label $label /srv/conda/envs/env_conda/conda-bld/*/$PACKAGENAME-*.tar.bz2
+                '''}
             }
         }
     }
-}
-
-def getTypeOfVersion(branchName) {
-  
-  def matcher = (env.BRANCH_NAME =~ /master/)
-  if (matcher.matches())
-    return ""
-  
-  return "dev"
 }

@@ -1,93 +1,80 @@
-## EOEPCA - Vegetation index
+# Click2CWL - from a Click context to a CWL document
 
-[![Build Status](https://travis-ci.com/EOEPCA/app-vegetation-index.svg?branch=master)](https://travis-ci.com/EOEPCA/app-vegetation-index)
+## Rational and context
 
-### About this application
+EO application developers use Click to create command line tools to process EO data.
 
-This is a simple application used as an artifact for testing EOEPCA release > 0.2
+To deploy those applications on an Exploitation Plaform on the Cloud, the EO application developers generate a CWL document that becomes an Application Package.
 
-It validates the fan-out with stage-in paradigm where Sentinel-2 acquisitions staged as a STAC local catalog are processed to produce the NBR, NDVI and NDWI vegetation indexes.  
+The repo contains a helpers Python module that exploits the information contained in a Click context object to generate the CWL document and eventually the parameters.
 
-### Build the docker
+## Installation
 
-The repo contains a Dockerfile and a Jenkinsfile.  
-
-The build is done by Terradue's Jenkins instance with the configured job https://build.terradue.com/job/containers/job/eoepca-vegetation-index/
-
-### Create the application package
-
-Run the command below to print the CWL: 
-
-```bash
-docker run --rm -it terradue/eoepca-vegetation-index:0.1 vegetation-index-cwl --docker 'terradue/eoepca-vegetation-index:0.1'
-```
-
-Save the CWL output to a file called `eoepca-vegetation-index.cwl`
-
-Package it as an application package wrapped in an Atom file with:
-
-```bash
-cwl2atom eoepca-vegetation-index.cwl > eoepca-vegetation-index.atom 
-```
-
-Post the Atom on the EOEPCA resource manager
-
-### Application execution
-
-#### Stage-in
-
-Create a YAML file with:
-
-instac.yml
-```yaml
-store_username: ''
-store_apikey: ''
-input_reference:
-- https://earth-search.aws.element84.com/v0/collections/sentinel-s2-l2a-cogs/items/S2B_36RTT_20191205_0_L2A 
-```
-
-Stage the STAC item as a local STAC catalog with:
+Install this Python module using `conda` or `mamba`:
 
 ```console
-cwltool instac.cwl instac.yml
+conda install -c terradue click2cwl
 ```
 
-Check the output and copy the results path (e.g. `/workspace/eoepca/app-vegetation-index/ugikjiux`)
+## Usage
 
-#### Running the application
+In the Python application entry point function, update and enrich the Click function decorator with the information for generating the CWL document.
 
-Create a YAML file with:
+The information defined at the Click function decorator is explained below.
 
-vegetation-index.yml
-```yaml
-aoi: 'POLYGON((30.358 29.243,30.358 29.545,30.8 29.545,30.8 29.243,30.358 29.243))'
-input_reference:
-- class: Directory
-  path: file:///workspace/eoepca/app-vegetation-index/ugikjiux
+### @click.command
+
+The `@click.command` decorator must:
+
+- set the `allow_extra_args` flag to `True`. This allows using the command line interface to pass the runtime information to generate the CWL.
+- set the `short_help` to define the CWL Workflow class **label**
+- set the `help` to define the CWL Workflow class **doc**
+
+```python
+@click.command(
+    short_help="This is Workflow class label",
+    help="This is Workflow class doc",
+    context_settings=dict(
+        ignore_unknown_options=True,
+        allow_extra_args=True,
+    ),
+)
 ```
 
-Run the application with:
+### @click.option
 
-```console
-cwltool vegetation-index.cwl#vegetation-index vegetation-index.yml
+The `@click.command` decorator must:
+
+- define the option type that can be `click.Path` for a `Directory`, a `click.File` for a `File` or the default, a `String` to map as `string`
+- set the `help` to define the CWL Workflow class **doc** and **label**
+- set the `required` flag to `False` if the parameter is optional
+
+```python
+@click.option(
+    "--input_path",
+    "-i",
+    "input_path",
+    type=click.Path(),
+    help="this input path",
+    multiple=False,
+    required=True,
+)
 ```
 
-### Development
+See the examples folder to discover typical use cases.
 
-Create the conda environment with:
-
-```console
-conda env create -f environment.yml
-```
-
-Install the `vegetation-index` executable with:
+Install your application with:
 
 ```console
 python setup.py install
 ```
 
-Check the installation with:
+Use additional args to drive the generation of the CWL document and associated parameters:
 
-```console
-vegetation-index --help
-```
+The additional args are:
+
+- `--dump` `cwl`|`params`|`clt`. Example `--dump cwl --dump params`
+- `--requirement` with `requirement=value` where requirement is one of `"coresMin"`, `"coresMax"`, `"ramMin"`, `"ramMax"`. Example: 
+ `--requirement ramMax=1 --requirement ramMin=2`
+ - `--docker <docker image>` if set, the DockerRequirement hint is set to pull the `<docker image>`
+ - `--env` sets environment variables in the CWL with `env_var=env_var_value`. Example `--env a=1 --env b=2`
