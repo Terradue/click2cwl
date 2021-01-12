@@ -73,7 +73,7 @@ Use additional args to drive the generation of the CWL document and associated p
 
 The additional args are:
 
-- `--dump` cwl|params|clt. Example `--dump cwl --dump params`
+- `--dump` `cwl`|`params`|`clt`. Example `--dump cwl --dump params`
 - `--requirement` with `requirement=value` where requirement is one of `"coresMin"`, `"coresMax"`, `"ramMin"`, `"ramMax"`. Example: 
  `--requirement ramMax=1 --requirement ramMin=2`
  - `--docker` <docker image> if set, the DockerRequirement hint is set to pull the <docker image> 
