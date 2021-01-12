@@ -133,10 +133,3 @@ class CWLParam(object):
 
         return cwl_type
 
-
-# print('opts', ctx.command.params[0].opts[0])
-# print('multiple', ctx.command.params[0].multiple)
-# print('required', ctx.command.params[0].required)
-# print('is_flag', ctx.command.params[0].is_flag)
-# print('help', ctx.command.params[0].help)
-# print('type', ctx.command.params[3].type.choices)
