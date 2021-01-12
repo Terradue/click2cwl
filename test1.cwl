@@ -15,12 +15,12 @@ $graph:
       inputBinding:
         position: 2
         prefix: --aoi
-      type: string
+      type: string?
     conf_file:
       inputBinding:
         position: 3
         prefix: --file
-      type: File
+      type: File?
     mode:
       inputBinding:
         position: 4
@@ -39,7 +39,7 @@ $graph:
   requirements:
     EnvVarRequirement:
       envDef:
-        PATH: /Applications/miniforge3/envs/env_vi/bin:/Applications/miniforge3/condabin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+        PATH: /opt/anaconda3/envs/env_click2cwl/bin:/opt/anaconda3/condabin:/Library/Frameworks/Python.framework/Versions/3.6/bin:/Library/Frameworks/Python.framework/Versions/3.7/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
         a: '1'
         b: '2'
     ResourceRequirement:
@@ -58,11 +58,11 @@ $graph:
     aoi:
       doc: help for the area of interest
       label: help for the area of interest
-      type: string
+      type: string?
     conf_file:
       doc: help for the conf file
       label: help for the conf file
-      type: File
+      type: File?
     mode:
       doc: null
       label: null

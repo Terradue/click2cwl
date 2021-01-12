@@ -36,7 +36,7 @@ class CWLParam(object):
 
         else:
 
-            clt_input = {'type': self.input_type,
+            clt_input = {'type': self.get_type(extended=True),
                         'inputBinding': {'position': position,
                                         'prefix': self.opt}
                         }
@@ -64,7 +64,7 @@ class CWLParam(object):
 
         else:
            
-            workflow_param = {'type': self.get_type(),
+            workflow_param = {'type': self.get_type(extended=True),
                             'label': self.help,
                             'doc': self.help
                             }

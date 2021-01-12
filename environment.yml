@@ -1,12 +1,8 @@
-name: env_vi
+name: env_click2cwl
 channels:
   - terradue
   - conda-forge
 dependencies:
-  - python=3.7
+  - python
   - click
-  - numpy
-  - pystac
-  - shapely
-  - gdal
-  - yaml
+  - pyyaml

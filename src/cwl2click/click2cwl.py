@@ -1,4 +1,5 @@
 import os
+import sys
 from .cwlexport import CWLExport
 from .cltexport import CLTExport
 from .paramexport import ParamExport
@@ -14,21 +15,17 @@ def dump(ctx):
     options['clt'] = CLTExport
  
     if click2cwl.extra_params:   
+        
+        for export in click2cwl.extra_params['dump']:
 
-        options[click2cwl.extra_params['dump']](click2cwl).dump()
+            options[export](click2cwl).dump()
+
+        sys.exit(0)
 
     else:
 
         return None
-        #if click2cwl.extra_params['dump'] == 'cwl':
-
-        #    CWLExport(click2cwl).dump()
         
-        #else:
-
-        #    ParamExport(click2cwl).dump()
-
-
 valid_requirements = ['coresMin', 'coresMax', 'ramMin', 'ramMax']
 
 class Click2CWL(object):
@@ -58,6 +55,8 @@ class Click2CWL(object):
         
         extra_params['env'] = {}
 
+        extra_params['dump'] = []
+
         for i in range(0, len(self.ctx.args), 2):
 
             key = self.ctx.args[i][2:]
@@ -75,6 +74,10 @@ class Click2CWL(object):
             elif key == 'env':
 
                 extra_params['env'][self.ctx.args[i + 1].split('=')[0]] = self.ctx.args[i + 1].split('=')[1]
+
+            elif key == 'dump':
+
+                extra_params['dump'].append(self.ctx.args[i + 1])
 
             else: 
 
