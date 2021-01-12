@@ -15,7 +15,7 @@ def dump(ctx):
     options["params"] = ParamExport
     options["clt"] = CLTExport
 
-    if click2cwl.extra_params:
+    if click2cwl.extra_params['dump']:
 
         for export in click2cwl.extra_params["dump"]:
 
