@@ -10,7 +10,7 @@ source:
 build:
   noarch: python
   script: python setup.py install
-  number: 0
+  number: 1
 
 requirements:
   build:
@@ -24,7 +24,7 @@ requirements:
 test:
 
   imports:
-    - cwl2click
+    - click2cwl
     - click
 
   commands:
