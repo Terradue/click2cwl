@@ -76,5 +76,5 @@ The additional args are:
 - `--dump` `cwl`|`params`|`clt`. Example `--dump cwl --dump params`
 - `--requirement` with `requirement=value` where requirement is one of `"coresMin"`, `"coresMax"`, `"ramMin"`, `"ramMax"`. Example: 
  `--requirement ramMax=1 --requirement ramMin=2`
- - `--docker` <docker image> if set, the DockerRequirement hint is set to pull the <docker image> 
+ - `--docker <docker image>` if set, the DockerRequirement hint is set to pull the `<docker image>`
  - `--env` sets environment variables in the CWL with `env_var=env_var_value`. Example `--env a=1 --env b=2`
