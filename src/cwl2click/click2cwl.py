@@ -4,19 +4,20 @@ from .cwlexport import CWLExport
 from .cltexport import CLTExport
 from .paramexport import ParamExport
 
+
 def dump(ctx):
 
     click2cwl = Click2CWL(ctx)
 
     options = dict()
 
-    options['cwl'] = CWLExport
-    options['params'] = ParamExport
-    options['clt'] = CLTExport
- 
-    if click2cwl.extra_params:   
-        
-        for export in click2cwl.extra_params['dump']:
+    options["cwl"] = CWLExport
+    options["params"] = ParamExport
+    options["clt"] = CLTExport
+
+    if click2cwl.extra_params:
+
+        for export in click2cwl.extra_params["dump"]:
 
             options[export](click2cwl).dump()
 
@@ -25,11 +26,12 @@ def dump(ctx):
     else:
 
         return None
-        
-valid_requirements = ['coresMin', 'coresMax', 'ramMin', 'ramMax']
+
+
+valid_requirements = ["coresMin", "coresMax", "ramMin", "ramMax"]
+
 
 class Click2CWL(object):
-
     def __init__(self, ctx):
 
         self.ctx = ctx
@@ -42,77 +44,87 @@ class Click2CWL(object):
         self.doc = self.ctx.command.help
 
         if not self.extra_params:
-    
+
             return None
 
-        self.extra_params['env']['PATH'] = self.get_path()
+        self.extra_params["env"]["PATH"] = self.get_path()
 
     def _get_extra_params(self):
 
         extra_params = {}
 
-        extra_params['requirements'] = {}
-        
-        extra_params['env'] = {}
+        extra_params["requirements"] = {}
 
-        extra_params['dump'] = []
+        extra_params["env"] = {}
+
+        extra_params["dump"] = []
 
         for i in range(0, len(self.ctx.args), 2):
 
             key = self.ctx.args[i][2:]
 
-            if key == 'requirement':
-    
-                if self.ctx.args[i + 1].split('=')[0] in valid_requirements: 
-                
-                    extra_params['requirements'][self.ctx.args[i + 1].split('=')[0]] = int(self.ctx.args[i + 1].split('=')[1])
-        
+            if key == "requirement":
+
+                if self.ctx.args[i + 1].split("=")[0] in valid_requirements:
+
+                    extra_params["requirements"][
+                        self.ctx.args[i + 1].split("=")[0]
+                    ] = int(self.ctx.args[i + 1].split("=")[1])
+
                 else:
 
-                    raise ValueError('Requirement {} is not valid'.format(self.ctx.args[i + 1].split('=')[0]))
+                    raise ValueError(
+                        "Requirement {} is not valid".format(
+                            self.ctx.args[i + 1].split("=")[0]
+                        )
+                    )
 
-            elif key == 'env':
+            elif key == "env":
 
-                extra_params['env'][self.ctx.args[i + 1].split('=')[0]] = self.ctx.args[i + 1].split('=')[1]
+                extra_params["env"][self.ctx.args[i + 1].split("=")[0]] = self.ctx.args[
+                    i + 1
+                ].split("=")[1]
 
-            elif key == 'dump':
+            elif key == "dump":
 
-                extra_params['dump'].append(self.ctx.args[i + 1])
+                extra_params["dump"].append(self.ctx.args[i + 1])
 
-            else: 
+            else:
 
                 extra_params[key] = self.ctx.args[i + 1]
 
         return extra_params
 
-
     def get_env_vars(self):
 
-        return self.extra_params.get('env')
+        return self.extra_params.get("env")
 
     def get_requirements(self):
-    
-        return {} if self.extra_params.get('requirements') is None else self.extra_params.get('requirements')
 
+        return (
+            {}
+            if self.extra_params.get("requirements") is None
+            else self.extra_params.get("requirements")
+        )
 
     def get_docker(self):
 
-        return self.extra_params.get('docker')
+        return self.extra_params.get("docker")
 
     def get_path(self):
-        
-        path = os.environ['PATH']
 
-        if ';' in path:
+        path = os.environ["PATH"]
 
-            path = os.environ['PATH'].split(';')[1]
+        if ";" in path:
 
-        if 'PREFIX' in os.environ:
+            path = os.environ["PATH"].split(";")[1]
 
-            path = ':'.join([os.path.join(os.environ['PREFIX'], 'bin'), path])
+        if "PREFIX" in os.environ:
+
+            path = ":".join([os.path.join(os.environ["PREFIX"], "bin"), path])
 
         return path
-    
+
     def get_scatter_param(self):
 
-        return self.extra_params.get('scatter')
+        return self.extra_params.get("scatter")
