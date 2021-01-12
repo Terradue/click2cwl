@@ -1,4 +1,32 @@
 import os
+from .cwlexport import CWLExport
+from .cltexport import CLTExport
+from .paramexport import ParamExport
+
+def dump(ctx):
+
+    click2cwl = Click2CWL(ctx)
+
+    options = dict()
+
+    options['cwl'] = CWLExport
+    options['params'] = ParamExport
+    options['clt'] = CLTExport
+ 
+    if click2cwl.extra_params:   
+
+        options[click2cwl.extra_params['dump']](click2cwl).dump()
+
+    else:
+
+        return None
+        #if click2cwl.extra_params['dump'] == 'cwl':
+
+        #    CWLExport(click2cwl).dump()
+        
+        #else:
+
+        #    ParamExport(click2cwl).dump()
 
 
 valid_requirements = ['coresMin', 'coresMax', 'ramMin', 'ramMax']

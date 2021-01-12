@@ -1,8 +1,9 @@
 import sys
 import click
-from .click2cwl import Click2CWL
-from .cwlexport import CWLExport
-from .paramexport import ParamExport
+from .click2cwl import dump
+#from .click2cwl import Click2CWL
+#from .cwlexport import CWLExport
+#from .paramexport import ParamExport
 
 #test1 -i a --dump cwl --requirement ramMax=1 --requirement ramMin=2 --docker aaa  --env a=1 --env b=2
 @click.command(short_help='hello Im the label of Workflow class',
@@ -17,17 +18,18 @@ from .paramexport import ParamExport
 @click.pass_context
 def test1(ctx, **kwargs):
 
-    click2cwl = Click2CWL(ctx)
+    dump(ctx)
+    # click2cwl = Click2CWL(ctx)
 
-    if click2cwl.extra_params:   
+    # if click2cwl.extra_params:   
         
-        if click2cwl.extra_params['dump'] == 'cwl':
+    #     if click2cwl.extra_params['dump'] == 'cwl':
 
-            CWLExport(click2cwl).dump()
+    #         CWLExport(click2cwl).dump()
         
-        else:
+    #     else:
 
-            ParamExport(click2cwl).dump()
+    #         ParamExport(click2cwl).dump()
 
     print('business as usual')
     print(kwargs)        
