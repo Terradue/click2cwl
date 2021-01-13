@@ -5,7 +5,7 @@ Python code:
 ```python
 import sys
 import click
-from .click2cwl import dump
+from click2cwl import dump
 
 @click.command(
     short_help="hello Im the label of Workflow class",
