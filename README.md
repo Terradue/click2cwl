@@ -11,7 +11,7 @@ To deploy these applications on an Exploitation Plaform on the Cloud, the EO app
 
 The repo contains a helper Python module that exploits the information contained in a **Click** [context object](https://click.palletsprojects.com/en/7.x/api/?highlight=context#click.Context) to generate the CWL document and eventually the parameters.
 
-This helper Python module can thus be used to add "CWL dump" behaviour to a Python CLI that uses Click by adding an import and call to a the `dump(ctx)` function provided in the helper Python module. 
+This helper Python module can thus be used to add "CWL dump" behaviour to a Python CLI that uses Click by adding an import and call to the `dump(ctx)` function provided in the helper Python module. 
 
 ## Installation
 
