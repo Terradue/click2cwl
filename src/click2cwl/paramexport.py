@@ -18,8 +18,15 @@ class ParamExport(object):
 
         return self._params
 
-    def dump(self):
+    def dump(self, stdout=True):
 
-        with open(f"{self.click2cwl.id}.yml", "w") as file:
+        if stdout:
 
-            yaml.dump(self._params, file)
+            print(yaml.dump(self._params))
+
+        else:
+
+            with open(f"{self.click2cwl.id}.cwl", "w") as file:
+
+                yaml.dump(self._params, file)
+

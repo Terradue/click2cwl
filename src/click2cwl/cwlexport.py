@@ -32,8 +32,14 @@ class CWLExport(object):
 
         return self._cwl_doc
 
-    def dump(self):
+    def dump(self, stdout=True):
 
-        with open(f"{self.click2cwl.id}.cwl", "w") as file:
+        if stdout:
 
-            yaml.dump(self._cwl_doc, file)
+            print(yaml.dump(self._cwl_doc))
+
+        else:
+
+            with open(f"{self.click2cwl.id}.cwl", "w") as file:
+
+                yaml.dump(self._cwl_doc, file)

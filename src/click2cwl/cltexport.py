@@ -27,8 +27,14 @@ class CLTExport(object):
 
         return self._clt_doc
 
-    def dump(self):
+    def dump(self, stdout=True):
 
-        with open(f"clt_{self.click2cwl.id}.cwl", "w") as file:
+        if stdout:
 
-            yaml.dump(self._clt_doc, file)
+            print(yaml.dump(self._clt_doc))
+
+        else:
+
+            with open(f"{self.click2cwl.id}.cwl", "w") as file:
+
+                yaml.dump(self._clt_doc, file)

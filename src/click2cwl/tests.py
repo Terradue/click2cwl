@@ -1,6 +1,6 @@
 import sys
 import click
-from .click2cwl import dump
+from .entry import dump
 
 # test1 -i a --dump cwl --requirement ramMax=1 --requirement ramMin=2 --docker aaa  --env a=1 --env b=2
 @click.command(
