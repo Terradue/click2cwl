@@ -19,7 +19,7 @@ def dump(ctx):
 
         for export in click2cwl.extra_params["dump"]:
 
-            options[export](click2cwl).dump()
+            options[export](click2cwl).dump(stdout='to-file' not in click2cwl.extra_params)
 
         sys.exit(0)
 
@@ -90,8 +90,12 @@ class Click2CWL(object):
                 extra_params["dump"].append(self.ctx.args[i + 1])
 
             else:
-
-                extra_params[key] = self.ctx.args[i + 1]
+                try: 
+                    extra_params[key] = self.ctx.args[i + 1]
+                except:
+                    # enables the --to-file flag
+                    extra_params[key] = None
+                    pass
 
         return extra_params
 

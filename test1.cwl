@@ -39,7 +39,7 @@ $graph:
   requirements:
     EnvVarRequirement:
       envDef:
-        PATH: /opt/anaconda3/envs/env_click2cwl/bin:/opt/anaconda3/condabin:/Library/Frameworks/Python.framework/Versions/3.6/bin:/Library/Frameworks/Python.framework/Versions/3.7/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+        PATH: /srv/conda/bin:/srv/conda/envs/env_click2cwl/bin:/srv/conda/condabin:/tmp/yarn--1608563737914-0.160735929787871:/srv/theia/node_modules/.bin:/home/jovyan/.config/yarn/link/node_modules/.bin:/home/jovyan/.yarn/bin:/home/jovyan/.nvm/versions/node/v12.20.0/libexec/lib/node_modules/npm/bin/node-gyp-bin:/home/jovyan/.nvm/versions/node/v12.20.0/lib/node_modules/npm/bin/node-gyp-bin:/home/jovyan/.nvm/versions/node/v12.20.0/bin:/home/jovyan/.nvm/versions/node/v12.20.0/bin:/srv/conda/envs/notebook/bin:/home/jovyan/.local/bin:/srv/conda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
         a: '1'
         b: '2'
     ResourceRequirement:
