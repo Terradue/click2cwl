@@ -3,9 +3,11 @@ from collections import OrderedDict
 
 
 class Workflow:
+
     def __init__(self, click2cwl):
 
         self._wf_class = dict()
+
         self.click2cwl = click2cwl
 
         self._wf_class["id"] = self.click2cwl.id

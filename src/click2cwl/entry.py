@@ -32,6 +32,8 @@ valid_requirements = ["coresMin", "coresMax", "ramMin", "ramMax"]
 
 
 class Click2CWL(object):
+
+    
     def __init__(self, ctx):
 
         self.ctx = ctx
@@ -54,6 +56,8 @@ class Click2CWL(object):
         extra_params = {}
 
         extra_params["requirements"] = {}
+
+        extra_params["metadata"] = {}
 
         extra_params["env"] = {}
 
@@ -82,6 +86,12 @@ class Click2CWL(object):
             elif key == "env":
 
                 extra_params["env"][self.ctx.args[i + 1].split("=")[0]] = self.ctx.args[
+                    i + 1
+                ].split("=")[1]
+
+            elif key == "metadata":
+
+                extra_params["metadata"][self.ctx.args[i + 1].split("=")[0]] = self.ctx.args[
                     i + 1
                 ].split("=")[1]
 
