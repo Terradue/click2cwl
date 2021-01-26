@@ -24,9 +24,6 @@ class CWLExport(object):
 
         self.metadata = WorkflowMetadata(**click2cwl.extra_params['metadata'])
 
-        print(self.metadata)
-        print(self.metadata.to_dict())
-
         self._cwl_doc = self.metadata.to_dict()
 
         self._cwl_doc["cwlVersion"] = "v1.0"
