@@ -3,7 +3,6 @@ from collections import OrderedDict
 
 
 class Workflow:
-
     def __init__(self, click2cwl):
 
         self._wf_class = dict()

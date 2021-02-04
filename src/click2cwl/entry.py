@@ -15,11 +15,13 @@ def dump(ctx):
     options["params"] = ParamExport
     options["clt"] = CLTExport
 
-    if click2cwl.extra_params['dump']:
+    if click2cwl.extra_params["dump"]:
 
         for export in click2cwl.extra_params["dump"]:
 
-            options[export](click2cwl).dump(stdout='to-file' not in click2cwl.extra_params)
+            options[export](click2cwl).dump(
+                stdout="to-file" not in click2cwl.extra_params
+            )
 
         sys.exit(0)
 
@@ -32,8 +34,6 @@ valid_requirements = ["coresMin", "coresMax", "ramMin", "ramMax"]
 
 
 class Click2CWL(object):
-
-    
     def __init__(self, ctx):
 
         self.ctx = ctx
@@ -91,16 +91,16 @@ class Click2CWL(object):
 
             elif key == "metadata":
 
-                extra_params["metadata"][self.ctx.args[i + 1].split("=")[0]] = self.ctx.args[
-                    i + 1
-                ].split("=")[1]
+                extra_params["metadata"][
+                    self.ctx.args[i + 1].split("=")[0]
+                ] = self.ctx.args[i + 1].split("=")[1]
 
             elif key == "dump":
 
                 extra_params["dump"].append(self.ctx.args[i + 1])
 
             else:
-                try: 
+                try:
                     extra_params[key] = self.ctx.args[i + 1]
                 except:
                     # enables the --to-file flag

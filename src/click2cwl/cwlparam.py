@@ -40,10 +40,22 @@ class CWLParam(object):
 
         else:
 
-            clt_input = {
-                "type": self.get_type(extended=True),
-                "inputBinding": {"position": position, "prefix": self.opt},
-            }
+            if self.multiple:
+
+                clt_input = {
+                    "type": {
+                        "type": "array",
+                        "items": self.get_type(),
+                        "inputBinding": {"position": position, "prefix": self.opt},
+                    }
+                }
+
+            else:
+
+                clt_input = {
+                    "type": self.get_type(extended=True),
+                    "inputBinding": {"position": position, "prefix": self.opt},
+                }
 
         return clt_input
 
@@ -132,4 +144,3 @@ class CWLParam(object):
                 cwl_type = f"{cwl_type}?"
 
         return cwl_type
-
