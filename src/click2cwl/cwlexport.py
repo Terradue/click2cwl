@@ -22,7 +22,7 @@ class CWLExport(object):
         self._cwl_doc = dict()
         self.click2cwl = click2cwl
 
-        self.metadata = WorkflowMetadata(**click2cwl.extra_params['metadata'])
+        self.metadata = WorkflowMetadata(**click2cwl.extra_params["metadata"])
 
         self._cwl_doc = self.metadata.to_dict()
 

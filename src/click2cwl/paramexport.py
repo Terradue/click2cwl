@@ -29,4 +29,3 @@ class ParamExport(object):
             with open(f"{self.click2cwl.id}.cwl", "w") as file:
 
                 yaml.dump(self._params, file)
-
