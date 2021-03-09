@@ -21,6 +21,15 @@ from .entry import dump
     required=True,
 )
 @click.option(
+    "--optional_reference",
+    "-o",
+    "optional_reference",
+    type=click.Path(),
+    help="this input reference is optional",
+    multiple=True,
+    required=False,
+)
+@click.option(
     "--aoi",
     "-a",
     "aoi",
