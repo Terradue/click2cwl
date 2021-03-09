@@ -42,13 +42,34 @@ class CWLParam(object):
 
             if self.multiple:
 
-                clt_input = {
-                    "type": {
-                        "type": "array",
-                        "items": self.get_type(),
-                        "inputBinding": {"position": position, "prefix": self.opt},
+                if self.required:    
+
+                    clt_input = {
+                        "type": {
+                            "type": "array",
+                            "items": self.get_type(),
+                            "inputBinding": {"position": position, "prefix": self.opt},
+                        }
                     }
-                }
+                else:
+
+#  s_expressions:
+#       inputBinding:
+#         position: 4
+#         prefix: --s-expressions
+#       type:
+#         - "null"
+#         - type: array
+#           items: string  
+
+                    clt_input = {"inputBinding": {"position": position, "prefix": self.opt},
+                    
+                                "type": ["null", {
+                            "type": "array",
+                            "items": self.get_type()}]
+                        }
+                    
+                    
 
             else:
 
