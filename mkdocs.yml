@@ -1,0 +1,18 @@
+site_name: click2cwl
+
+theme:
+  name: material
+
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight
+  - pymdownx.superfences
+
+plugins:
+  - mkdocs-jupyter
+
+nav:
+  - Introduction: 'index.md'
+  - Installation: 'installation.md'
+  - Getting started: 'gettingstarted.md'
+  - Examples
