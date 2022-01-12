@@ -18,7 +18,7 @@ from click2cwl import dump
     type=click.Path(),
     help="this input reference",
     multiple=True,
-    required=True,
+    required=False,
 )
 @click.option(
     "--aoi",

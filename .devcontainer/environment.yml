@@ -1,0 +1,19 @@
+name: env_click2cwl
+channels:
+  - terradue
+  - conda-forge
+dependencies:
+  - python
+  - click
+  - pyyaml
+  - mamba
+  - pylint
+  - black
+  - autopep8
+  - yapf
+  - flake8
+  - mypy
+  - bandit
+  - pycodestyle
+  - pydocstyle
+  - nose2
