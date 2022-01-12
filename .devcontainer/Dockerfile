@@ -8,7 +8,7 @@ ENV BASH_ENV=~/.bashrc                                       \
     DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update                                                      && \
-    apt-get install -y ca-certificates wget bash bzip2  git  curl  sudo jq 
+    apt-get install -y ca-certificates wget bash bzip2  git  curl  sudo jq  git-flow
 
 ARG USERNAME=linus
 ARG USER_UID=1000
