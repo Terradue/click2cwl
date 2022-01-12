@@ -1,0 +1,28 @@
+{
+    "name": "click2cwl",
+    "build": {
+      "context": "..",
+      "dockerfile": "./Dockerfile"
+    },
+    "settings": {
+      "terminal.integrated.shell.linux": "/bin/bash",
+      "python.pythonPath": "/srv/conda/envs/env_click2cwl/bin/python",
+      "python.linting.enabled": true,
+      "python.linting.pylintEnabled": true,
+      "python.formatting.autopep8Path": "/srv/conda/envs/env_click2cwl/bin/autopep8",
+      "python.formatting.blackPath": "/srv/conda/envs/env_click2cwl/bin/black",
+      "python.formatting.yapfPath": "/srv/conda/envs/env_click2cwl/bin/yapf",
+      "python.linting.banditPath": "/srv/conda/envs/env_click2cwl/bin/bandit",
+      "python.linting.flake8Path": "/srv/conda/envs/env_click2cwl/bin/flake8",
+      "python.linting.mypyPath": "/srv/conda/envs/env_click2cwl/bin/mypy",
+      "python.linting.pycodestylePath": "/srv/conda/envs/env_click2cwl/bin/pycodestyle",
+      "python.linting.pydocstylePath": "/srv/conda/envs/env_click2cwl/bin/pydocstyle",
+      "python.linting.pylintPath": "/srv/conda/envs/env_click2cwl/bin/pylint"
+    },
+    "extensions": [
+      "ms-python.python"
+    ],
+    "mounts": []
+
+    }
+

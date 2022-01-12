@@ -124,3 +124,7 @@ The additional args are:
  `--requirement ramMax=1 --requirement ramMin=2`
  - `--docker <docker image>` if set, the `DockerRequirement` hint is set to pull the `<docker image>`
  - `--env` sets environment variables in the CWL with `env_var=env_var_value`. Example `--env A=1 --env B=2` where A and B are the environment variables to set in the CWL `EnvVarRequirement` requirement
+
+## Try me on Binder
+
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Terradue/click2cwl/develop)

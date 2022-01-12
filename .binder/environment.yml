@@ -1,0 +1,13 @@
+name: env_click2cwl
+channels:
+  - terradue
+  - conda-forge
+  - eoepca
+dependencies:
+  - python=3.7
+  - click
+  - ipykernel
+  - pyyaml
+  - cwl-wrapper
+  - cwltool
+  - graphviz
