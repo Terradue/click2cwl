@@ -124,6 +124,8 @@ The additional args are:
  `--requirement ramMax=1 --requirement ramMin=2`
  - `--docker <docker image>` if set, the `DockerRequirement` hint is set to pull the `<docker image>`
  - `--env` sets environment variables in the CWL with `env_var=env_var_value`. Example `--env A=1 --env B=2` where A and B are the environment variables to set in the CWL `EnvVarRequirement` requirement
+ - `--wall-time <wall-time in seconds>` if set, the `ToolTimeLimit` cWL requirement is set and the CWL document version is set to v1.1 (instead of default 1.0)
+ - `--cwl-version`, if set, the `cwlVersion` uses that value
 
 ## Try me on Binder
 
