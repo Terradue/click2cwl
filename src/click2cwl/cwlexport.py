@@ -6,7 +6,7 @@ from collections import OrderedDict
 
 
 def setup_yaml():
-    """ https://stackoverflow.com/a/8661021 """
+    """https://stackoverflow.com/a/8661021"""
     represent_dict_order = lambda self, data: self.represent_mapping(
         "tag:yaml.org,2002:map", data.items()
     )
@@ -26,12 +26,21 @@ class CWLExport(object):
 
         self._cwl_doc = self.metadata.to_dict()
 
-        self._cwl_doc["cwlVersion"] = "v1.0"
+        self._cwl_doc["cwlVersion"] = self._get_cwl_version()
 
         self._cwl_doc["$graph"] = [
             CommandLineTool(self.click2cwl).to_dict(),
             Workflow(self.click2cwl).to_dict(),
         ]
+
+    def _get_cwl_version(self):
+
+        if "cwl-version" in self.click2cwl.extra_params.keys():
+            return self.click2cwl.extra_params["cwl-version"]
+        elif "wall-time" in self.click2cwl.extra_params.keys():
+            return "v1.1"
+        else:
+            return "v1.0"
 
     def to_dict(self):
 

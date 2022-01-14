@@ -36,6 +36,11 @@ class CommandLineTool:
             "EnvVarRequirement": {"envDef": env_vars},
         }
 
+        if "wall-time" in self.click2cwl.extra_params.keys():
+            self._clt_class["requirements"]["ToolTimeLimit"] = {
+                "timelimit": self.click2cwl.extra_params["wall-time"]
+            }
+
         self._clt_class["inputs"] = OrderedDict()
 
         for index, param in enumerate(self.click2cwl.params):
