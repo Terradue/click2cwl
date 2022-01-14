@@ -99,6 +99,14 @@ class Click2CWL(object):
 
                 extra_params["dump"].append(self.ctx.args[i + 1])
 
+            elif key == "wall-time":
+
+                extra_params["wall-time"] = int(self.ctx.args[i + 1])
+
+            elif key == "cwl-version":
+
+                extra_params["cwl-version"] = self.ctx.args[i + 1]
+
             else:
                 try:
                     extra_params[key] = self.ctx.args[i + 1]

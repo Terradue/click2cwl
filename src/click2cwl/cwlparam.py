@@ -53,15 +53,6 @@ class CWLParam(object):
                     }
                 else:
 
-                    #  s_expressions:
-                    #       inputBinding:
-                    #         position: 4
-                    #         prefix: --s-expressions
-                    #       type:
-                    #         - "null"
-                    #         - type: array
-                    #           items: string
-
                     clt_input = {
                         "type": [
                             "null",
