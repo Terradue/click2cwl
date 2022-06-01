@@ -143,6 +143,7 @@ class CWLParam(object):
         cwl_types[click.types.File] = "File"
         cwl_types[click.types.StringParamType] = "string"
         cwl_types[click.types.Choice] = "enum"
+        cwl_types[click.types.BoolParamType] = "boolean"
 
         cwl_type = cwl_types.get(type(self._option.type))
 
