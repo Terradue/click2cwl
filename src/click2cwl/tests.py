@@ -47,6 +47,12 @@ from .entry import dump
 @click.option(
     "--mode", "-m", "mode", type=click.Choice(["local", "ftp"]), required=False
 )
+@click.option(
+    "--flag",
+    "flag",
+    help="help for the flag ",
+    is_flag=True,
+)
 @click.pass_context
 def test1(ctx, **kwargs):
 

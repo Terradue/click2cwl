@@ -3,7 +3,7 @@ channels:
   - terradue
   - conda-forge
 dependencies:
-  - python
+  - python=3.8
   - click
   - pyyaml
   - mamba
@@ -17,3 +17,4 @@ dependencies:
   - pycodestyle
   - pydocstyle
   - nose2
+  - cwltool
