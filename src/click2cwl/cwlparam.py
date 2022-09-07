@@ -110,6 +110,9 @@ class CWLParam(object):
                 "doc": self.help,
             }
 
+        if self.default is not None:
+            workflow_param["default"] = self.default
+
         return workflow_param
 
     def to_param(self):

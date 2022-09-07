@@ -21,6 +21,14 @@ from click2cwl import dump
     required=False,
 )
 @click.option(
+    "--boi",
+    "-b",
+    "boi",
+    help="help for the area of interest",
+    default="2",
+    required=False,
+)
+@click.option(
     "--aoi",
     "-a",
     "aoi",
