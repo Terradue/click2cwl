@@ -21,10 +21,10 @@ class CWLParam(object):
 
             if self.required:
                 clt_input = {
-                    "type": {
+                    "type": [{
                         "type": self.input_type,
                         "symbols": self._option.type.choices,
-                    },
+                    }],
                     "inputBinding": {"position": position, "prefix": self.opt},
                 }
 
@@ -83,10 +83,10 @@ class CWLParam(object):
             if self.required:
 
                 workflow_param = {
-                    "type": {
+                    "type": [{
                         "type": self.input_type,
                         "symbols": self._option.type.choices,
-                    },
+                    }],
                     "label": self.help,
                     "doc": self.help,
                 }
