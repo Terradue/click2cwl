@@ -4,6 +4,8 @@ from .wf import Workflow
 from .metadata import WorkflowMetadata
 from collections import OrderedDict
 
+# yaml_same_ids_deep_copy.py
+from copy import deepcopy
 
 def setup_yaml():
     """https://stackoverflow.com/a/8661021"""
@@ -15,7 +17,7 @@ def setup_yaml():
 
 setup_yaml()
 
-
+    
 class CWLExport(object):
     def __init__(self, click2cwl):
 
@@ -29,8 +31,8 @@ class CWLExport(object):
         self._cwl_doc["cwlVersion"] = self._get_cwl_version()
 
         self._cwl_doc["$graph"] = [
-            CommandLineTool(self.click2cwl).to_dict(),
-            Workflow(self.click2cwl).to_dict(),
+            deepcopy(CommandLineTool(self.click2cwl).to_dict()),
+            deepcopy(Workflow(self.click2cwl).to_dict()),
         ]
 
     def _get_cwl_version(self):
