@@ -138,8 +138,6 @@ class CWLParam(object):
 
     def get_type(self, extended=False):
 
-        cwl_type = None
-
         cwl_types = {}
 
         cwl_types[click.types.Path] = "Directory"
@@ -148,7 +146,12 @@ class CWLParam(object):
         cwl_types[click.types.Choice] = "enum"
         cwl_types[click.types.BoolParamType] = "boolean"
 
-        cwl_type = cwl_types.get(type(self._option.type))
+        option_type = type(self._option.type)
+        cwl_type = cwl_types.get(option_type)
+
+        if option_type is click.types.Path:
+            if not self._option.type.dir_okay:
+                cwl_type = "File"
 
         if self.scatter:
 
