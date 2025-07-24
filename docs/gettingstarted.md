@@ -1,6 +1,6 @@
 # Getting started
 
-Add `click2cwl` dependency and `terradue` channel in your environment.yml file, e.g.:
+Add `click2cwl` dependency:
 
 ```yaml
 name: my_env
@@ -9,6 +9,7 @@ channels:
   - conda-forge
 dependencies:
   - python
+  pip:
   - click2cwl
 ```
 

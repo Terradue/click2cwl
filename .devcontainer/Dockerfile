@@ -7,7 +7,7 @@ ENV BASH_ENV=~/.bashrc                                       \
     PATH=/srv/conda/envs/env_click2cwl/bin:${PATH}                  \
     DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update                                                      && \
+RUN apt-get update -qy                                                     && \
     apt-get install -y ca-certificates wget bash bzip2  git  curl  sudo jq  git-flow vim 
 
 ARG USERNAME=linus
