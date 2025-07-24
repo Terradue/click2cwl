@@ -2,12 +2,12 @@ name: Publish to PyPI
 
 on:
   push:
-    branches: [develop, main ]
+    branches: [develop, main, master]
     
   release:
     types: [published]
   pull_request:
-    branches: [develop, main]
+    branches: [develop, main, master]
     
 permissions:
   contents: read
@@ -36,12 +36,12 @@ jobs:
         pip install .
         python tests/test_cwl.py
     - name: Publish package distributions to PyPI (main)
-      if: github.ref == 'refs/heads/main'
+      if: github.ref == 'refs/heads/master'
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         repository-url: https://upload.pypi.org/legacy/
     - name: Publish package distributions to PyPI (develop)
-      if: github.ref != 'refs/heads/main' 
+      if: github.ref != 'refs/heads/master' 
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         repository-url: https://test.pypi.org/legacy/
