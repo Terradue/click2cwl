@@ -3,17 +3,11 @@ name: Publish to PyPI
 on:
   push:
     branches: [develop, main ]
-    paths:
-    - 'src/**'
-    - '.github/workflows/package.yaml'
     
   release:
     types: [published]
   pull_request:
     branches: [develop, main]
-    paths:
-    - 'src/**'
-  
     
 permissions:
   contents: read
