@@ -36,9 +36,11 @@ jobs:
       run: |
         # python -m pip install --upgrade pip
         pip install hatch
-    - name: Build package
+    - name: Build and test package
       run: |
         hatch build         
+        pip install .
+        python tests/test_cwl.py
     - name: Publish package distributions to PyPI (main)
       if: github.ref == 'refs/heads/main'
       uses: pypa/gh-action-pypi-publish@release/v1
