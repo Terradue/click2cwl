@@ -35,9 +35,6 @@ dependencies = [
     "pyyaml"
 ]
 
-# [project.scripts]
-# send-message = "src.app:main"
-
 
 [project.urls]
 Documentation = "https://github.com/Terradue/click2cwl#readme"
@@ -55,37 +52,8 @@ dependencies = [
 [tool.hatch.envs.prod]
 path = "/app/envs/click2cwl"
 
-
-[tool.coverage.run]
-source_pkgs = ["src/click2cwl", "tests"]
-branch = true
-parallel = true
-
-[tool.coverage.paths]
-src = ["src/click2cwl"]
-tests = ["tests"]
-
-[tool.coverage.report]
-exclude_lines = [
-  "no cov",
-  "if __name__ == .__main__.:",
-  "if TYPE_CHECKING:",
-]
-
-[tool.hatch.envs.test]
-skip-install = false
-
 dependencies = [
 "click<9",
-"pyyaml",
-"nose2",
+"pyyaml"
 ]
 
-
-[tool.hatch.envs.test.scripts]
-test = "hatch run nose2"
-testv = "hatch run nose2 --verbose"
-cov = ["coverage run --source=src/click2cwl -m nose2", "coverage report"]
-
-[[tool.hatch.envs.test.matrix]]
-python = ["3.7", "3.9", "3.10", "3.11", "3.12", "3.13"]
