@@ -18,7 +18,7 @@ This helper Python module can thus be used to add "CWL dump" behaviour to a Pyth
 Install this Python module in your conda environment using `conda` or `mamba` (see this [article](https://wolfv.medium.com/mamba-development-news-29e32aaa8d6c) to learn about mamba):
 
 ```console
-conda install -c terradue click2cwl
+pip install -c terradue click2cwl
 ```
 
 **Note:** Add `click2cwl` dependency and `terradue` channel in your environment.yml file, e.g.:
@@ -30,6 +30,7 @@ channels:
   - conda-forge
 dependencies:
   - python
+  pip:
   - click2cwl
 ```
 
@@ -103,10 +104,10 @@ if __name__ == '__main__':
 
 **Note:** See the examples folder to discover typical use cases.
 
-Install your application with:
+Build your application with:
 
 ```console
-python setup.py install
+hatch build
 ```
 
 When the app help is invoked, it will only show the arguments defined by the click.decorators:  

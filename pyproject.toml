@@ -1,0 +1,91 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+
+[project]
+name = "click2cwl"
+version = "0.3.4"  
+description = 'Generates CWL documents and associated parameters from a Click CLI definition'
+readme = "README.md"
+requires-python = ">=3.7"
+license = "MIT"
+keywords = ["CWL", "click", "cli"]
+authors = [
+  { name = "Fabrice Brito", email = "fabrice.brito@terradue.com" },
+  { name = "Michele Longobardo", email = "michele.longobardo@terradue.com" },
+  { name = "Blasco Brauzzi" },
+  { name = "Simone Vaccari", email = "simone.vaccari@terradue.com" },
+  { name = "Farid Yusifli" }
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+    "click<9",
+    "pyyaml"
+]
+
+# [project.scripts]
+# send-message = "src.app:main"
+
+
+[project.urls]
+Documentation = "https://github.com/Terradue/click2cwl#readme"
+Issues = "https://github.com/Terradue/click2cwl/issues"
+Source = "https://github.com/Terradue/click2cwl"
+
+
+[tool.hatch.envs.default]
+skip-install = false
+dependencies = [
+    "click<9",
+    "pyyaml"
+]
+
+[tool.hatch.envs.prod]
+path = "/app/envs/click2cwl"
+
+
+[tool.coverage.run]
+source_pkgs = ["src/click2cwl", "tests"]
+branch = true
+parallel = true
+
+[tool.coverage.paths]
+src = ["src/click2cwl"]
+tests = ["tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
+
+[tool.hatch.envs.test]
+skip-install = false
+
+dependencies = [
+"click<9",
+"pyyaml",
+"nose2",
+]
+
+
+[tool.hatch.envs.test.scripts]
+test = "hatch run nose2"
+testv = "hatch run nose2 --verbose"
+cov = ["coverage run --source=src/click2cwl -m nose2", "coverage report"]
+
+[[tool.hatch.envs.test.matrix]]
+python = ["3.7", "3.9", "3.10", "3.11", "3.12", "3.13"]
