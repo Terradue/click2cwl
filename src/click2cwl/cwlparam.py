@@ -1,8 +1,11 @@
 import click
+from typing import Union
+
+AnyParameter = Union[click.Option, click.Argument, click.Parameter]
 
 
 class CWLParam(object):
-    def __init__(self, click_option, scatter=False):
+    def __init__(self, click_option: AnyParameter, scatter: bool = False) -> None:
 
         self._option = click_option
 
@@ -10,12 +13,16 @@ class CWLParam(object):
         self.opt = self._option.opts[0]
         self.multiple = self._option.multiple
         self.required = self._option.required
-        self.help = self._option.help
+        # help only available in 'Option' (https://github.com/pallets/click/issues/587)
+        self.help = getattr(self._option, "help", None)
         self.scatter = scatter
         self.input_type = self.get_type()
         self.default = self._option.default
 
     def to_clt_input(self, position):
+
+        prefix = {"prefix": self.opt} if isinstance(self._option, click.Option) else {}
+        binding = {"position": position, **prefix}
 
         if self.input_type == "enum":
 
@@ -25,7 +32,7 @@ class CWLParam(object):
                         "type": self.input_type,
                         "symbols": self._option.type.choices,
                     }],
-                    "inputBinding": {"position": position, "prefix": self.opt},
+                    "inputBinding": binding,
                 }
 
             else:
@@ -35,7 +42,7 @@ class CWLParam(object):
                         "null",
                         {"type": self.input_type, "symbols": self._option.type.choices},
                     ],
-                    "inputBinding": {"position": position, "prefix": self.opt},
+                    "inputBinding": binding,
                 }
 
         else:
@@ -48,7 +55,7 @@ class CWLParam(object):
                         "type": {
                             "type": "array",
                             "items": self.get_type(),
-                            "inputBinding": {"position": position, "prefix": self.opt},
+                            "inputBinding": binding,
                         }
                     }
                 else:
@@ -59,10 +66,7 @@ class CWLParam(object):
                             {
                                 "type": "array",
                                 "items": self.get_type(),
-                                "inputBinding": {
-                                    "position": position,
-                                    "prefix": self.opt,
-                                },
+                                "inputBinding": binding,
                             },
                         ]
                     }
@@ -71,12 +75,14 @@ class CWLParam(object):
 
                 clt_input = {
                     "type": self.get_type(extended=True),
-                    "inputBinding": {"position": position, "prefix": self.opt},
+                    "inputBinding": binding,
                 }
 
         return clt_input
 
     def to_workflow_param(self):
+
+        help_info = {"label": self.help, "doc": self.help} if self.help else {}
 
         if self.input_type == "enum":
 
@@ -87,8 +93,7 @@ class CWLParam(object):
                         "type": self.input_type,
                         "symbols": self._option.type.choices,
                     }],
-                    "label": self.help,
-                    "doc": self.help,
+                    **help_info,
                 }
 
             else:
@@ -98,16 +103,14 @@ class CWLParam(object):
                         "null",
                         {"type": self.input_type, "symbols": self._option.type.choices},
                     ],
-                    "label": self.help,
-                    "doc": self.help,
+                    **help_info,
                 }
 
         else:
 
             workflow_param = {
                 "type": self.get_type(extended=True),
-                "label": self.help,
-                "doc": self.help,
+                **help_info,
             }
 
         if self.default is not None:
