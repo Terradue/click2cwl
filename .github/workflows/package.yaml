@@ -32,9 +32,10 @@ jobs:
         pip install hatch
     - name: Build and test package
       run: |
-        hatch build         
-        pip install .
+        hatch build
+        pip install '.[test]'
         python tests/test_cwl.py
+        pytest
     - name: Publish package distributions to PyPI (main)
       if: github.ref == 'refs/heads/master'
       uses: pypa/gh-action-pypi-publish@release/v1

@@ -23,7 +23,7 @@ class CWLParam(object):
                 clt_input = {
                     "type": [{
                         "type": self.input_type,
-                        "symbols": self._option.type.choices,
+                        "symbols": list(self._option.type.choices),
                     }],
                     "inputBinding": {"position": position, "prefix": self.opt},
                 }
@@ -33,7 +33,7 @@ class CWLParam(object):
                 clt_input = {
                     "type": [
                         "null",
-                        {"type": self.input_type, "symbols": self._option.type.choices},
+                        {"type": self.input_type, "symbols": list(self._option.type.choices)},
                     ],
                     "inputBinding": {"position": position, "prefix": self.opt},
                 }
@@ -85,7 +85,7 @@ class CWLParam(object):
                 workflow_param = {
                     "type": [{
                         "type": self.input_type,
-                        "symbols": self._option.type.choices,
+                        "symbols": list(self._option.type.choices),
                     }],
                     "label": self.help,
                     "doc": self.help,
@@ -96,7 +96,7 @@ class CWLParam(object):
                 workflow_param = {
                     "type": [
                         "null",
-                        {"type": self.input_type, "symbols": self._option.type.choices},
+                        {"type": self.input_type, "symbols": list(self._option.type.choices)},
                     ],
                     "label": self.help,
                     "doc": self.help,
