@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "click2cwl"
-version = "0.3.4"  
+version = "0.4.0"  
 description = 'Generates CWL documents and associated parameters from a Click CLI definition'
 readme = "README.md"
 requires-python = ">=3.7"
@@ -16,7 +16,8 @@ authors = [
   { name = "Michele Longobardo", email = "michele.longobardo@terradue.com" },
   { name = "Blasco Brauzzi" },
   { name = "Simone Vaccari", email = "simone.vaccari@terradue.com" },
-  { name = "Farid Yusifli" }
+  { name = "Farid Yusifli" },
+  { name = "Francis Charette-Migneault" }
 ]
 classifiers = [
   "Development Status :: 4 - Beta",
