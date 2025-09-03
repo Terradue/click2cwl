@@ -9,6 +9,7 @@ import click
 import pytest
 
 import click2cwl
+from click2cwl.cwlparam import CWLParam
 
 
 @click.command()
@@ -97,3 +98,24 @@ def test_enum_dict():
             }
         ]
     }
+
+
+@pytest.mark.parametrize(
+    ["click_type", "cwl_type"],
+    [
+        (click.Option(["--test"], type=int), "int"),
+        (click.Option(["--test"], type=float), "float"),
+        (click.Option(["--test"], type=str), "string"),
+        (click.Option(["--test"], type=click.INT), "int"),
+        (click.Option(["--test"], type=click.FLOAT), "float"),
+        (click.Option(["--test"], type=click.STRING), "string"),
+        (click.Option(["--test"], type=click.UUID), "string"),
+        (click.Option(["--test"], type=click.DateTime()), "string"),
+        (click.Option(["--test"], type=click.Choice([1, 2])), "enum"),
+        (click.Option(["--test"], type=click.Path()), "Directory"),
+        (click.Option(["--test"], type=click.File()), "File"),
+    ]
+)
+def test_param_mapping(click_type, cwl_type):
+    param = CWLParam(click_type)
+    assert param.get_type() == cwl_type
