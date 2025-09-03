@@ -163,7 +163,10 @@ class CWLParam(object):
         cwl_type = cwl_types.get(option_type)
 
         if cwl_type is None:
-            raise TypeError(f"Unknown CWL type mapping from Click parameter type: {option_type}")
+            raise TypeError(
+                f"Unknown CWL type mapping from Click parameter type: [{option_type}]. "
+                f"Only the following Click parameter types are supported: {list(cwl_types)}"
+            )
 
         if option_type is click.types.Path:
             if not self._option.type.dir_okay:
