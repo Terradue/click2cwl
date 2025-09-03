@@ -141,16 +141,29 @@ class CWLParam(object):
 
     def get_type(self, extended=False):
 
-        cwl_types = {}
-
-        cwl_types[click.types.Path] = "Directory"
-        cwl_types[click.types.File] = "File"
-        cwl_types[click.types.StringParamType] = "string"
-        cwl_types[click.types.Choice] = "enum"
-        cwl_types[click.types.BoolParamType] = "boolean"
+        # https://www.commonwl.org/v1.2/CommandLineTool.html#CWLType
+        # https://click.palletsprojects.com/en/stable/parameter-types/
+        # https://click.palletsprojects.com/en/stable/api/#click-api-types
+        cwl_types = {
+            click.types.Path: "Directory",
+            click.types.File: "File",
+            click.types.StringParamType: "string",
+            click.types.DateTime: "string",
+            click.types.UUIDParameterType: "string",
+            click.types.UnprocessedParamType: "string",
+            click.types.Choice: "enum",
+            click.types.BoolParamType: "boolean",
+            click.types.IntParamType: "int",
+            click.types.IntRange: "int",
+            click.types.FloatParamType: "float",
+            click.types.FloatRange: "float",
+        }
 
         option_type = type(self._option.type)
         cwl_type = cwl_types.get(option_type)
+
+        if cwl_type is None:
+            raise TypeError(f"Unknown CWL type mapping from Click parameter type: {option_type}")
 
         if option_type is click.types.Path:
             if not self._option.type.dir_okay:
