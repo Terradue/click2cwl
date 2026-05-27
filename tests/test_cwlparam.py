@@ -58,6 +58,7 @@ def test_enum_dict():
         ]
     }
 
+
 @pytest.mark.parametrize(
     ["click_type", "cwl_type"],
     [
