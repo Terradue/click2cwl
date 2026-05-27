@@ -16,7 +16,10 @@ class CWLParam(object):
         self.help = getattr(self._option, "help", None)
         self.scatter = scatter
         self.input_type = self.get_type()
-        self.default = self._option.default
+        unset_default = getattr(click.core, "UNSET", None)
+        self.default = (
+            None if self._option.default is unset_default else self._option.default
+        )
 
     def to_clt_input(self, position):
         prefix = {"prefix": self.opt} if isinstance(self._option, click.Option) else {}

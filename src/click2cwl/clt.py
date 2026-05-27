@@ -1,4 +1,3 @@
-import os
 from .cwlparam import CWLParam
 from collections import OrderedDict
 

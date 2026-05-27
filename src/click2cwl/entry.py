@@ -94,10 +94,9 @@ class Click2CWL(object):
             else:
                 try:
                     extra_params[key] = self.ctx.args[i + 1]
-                except:
+                except IndexError:
                     # enables the --to-file flag
                     extra_params[key] = None
-                    pass
 
         return extra_params
 

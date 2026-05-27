@@ -10,9 +10,10 @@ from copy import deepcopy
 
 def setup_yaml():
     """https://stackoverflow.com/a/8661021"""
-    represent_dict_order = lambda self, data: self.represent_mapping(
-        "tag:yaml.org,2002:map", data.items()
-    )
+
+    def represent_dict_order(self, data):
+        return self.represent_mapping("tag:yaml.org,2002:map", data.items())
+
     yaml.add_representer(OrderedDict, represent_dict_order)
 
 

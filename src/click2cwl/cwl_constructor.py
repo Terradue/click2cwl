@@ -1,7 +1,6 @@
 import os
 import click
 import yaml
-import errno
 
 
 class CwlCreator:
@@ -23,7 +22,7 @@ class CwlCreator:
         for i in range(len(self.command_names)):
             if (
                 "enum" in self.get_input_type(self.option_list[i])
-                and self.option_list[i].required == False
+                and not self.option_list[i].required
             ):
                 self.set_clt_inputs(
                     {
@@ -192,14 +191,14 @@ class CwlCreator:
             self.dump_params_file()
 
     def get_input_type(self, ctx):
-        if type(ctx.type) == click.File:
+        if isinstance(ctx.type, click.File):
             if ctx.multiple and ctx.required:
                 return "File[]"
             elif not ctx.required:
                 return "File?"
             return "File"
 
-        if type(ctx.type) == click.Path:
+        if isinstance(ctx.type, click.Path):
             if ctx.multiple and ctx.required:
                 return "Directory[]"
             elif not ctx.required:
@@ -213,7 +212,7 @@ class CwlCreator:
                 return "string?"
             return "string"
 
-        if type(ctx.type) == click.Choice:
+        if isinstance(ctx.type, click.Choice):
             return "enum"
 
     def set_clt_inputs(self, inputs):
