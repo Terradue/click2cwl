@@ -2,6 +2,7 @@ import sys
 import click
 from click2cwl import dump
 
+
 # test1 -i a --dump cwl --requirement ramMax=1 --requirement ramMin=2 --docker aaa  --env a=1 --env b=2
 @click.command(
     short_help="hello Im the label of Workflow class",
@@ -48,13 +49,13 @@ from click2cwl import dump
 )
 @click.pass_context
 def main(ctx, **kwargs):
-
     dump(ctx)
 
     print("business as usual")
     print(kwargs)
 
     sys.exit(0)
-    
+
+
 if __name__ == "__main__":
     main()

@@ -16,7 +16,6 @@ setup_yaml()
 
 class CLTExport(object):
     def __init__(self, click2cwl):
-
         self.click2cwl = click2cwl
 
         self._clt_doc = CommandLineTool(self.click2cwl).to_dict()
@@ -24,7 +23,6 @@ class CLTExport(object):
         self._clt_doc["cwlVersion"] = self._get_cwl_version()
 
     def _get_cwl_version(self):
-
         if "cwl-version" in self.click2cwl.extra_params.keys():
             return self.click2cwl.extra_params["cwl-version"]
         elif "wall-time" in self.click2cwl.extra_params.keys():
@@ -33,17 +31,12 @@ class CLTExport(object):
             return "v1.0"
 
     def to_dict(self):
-
         return self._clt_doc
 
     def dump(self, stdout=True):
-
         if stdout:
-
             print(yaml.dump(self._clt_doc))
 
         else:
-
             with open(f"{self.click2cwl.id}.cwl", "w") as file:
-
                 yaml.dump(self._clt_doc, file)
