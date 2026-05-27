@@ -12,12 +12,13 @@ requires-python = ">=3.7"
 license = "MIT"
 keywords = ["CWL", "click", "cli"]
 authors = [
-  { name = "Fabrice Brito", email = "fabrice.brito@terradue.com" },
-  { name = "Michele Longobardo", email = "michele.longobardo@terradue.com" },
   { name = "Blasco Brauzzi" },
-  { name = "Simone Vaccari", email = "simone.vaccari@terradue.com" },
+  { name = "Fabrice Brito", email = "fabrice.brito@terradue.com" },
   { name = "Farid Yusifli" },
-  { name = "Simone Tripodi", email = "simone.tripodi@terradue.com" }
+  { name = "Francis Charette-Migneault" },
+  { name = "Michele Longobardo", email = "michele.longobardo@terradue.com" },
+  { name = "Simone Tripodi", email = "simone.tripodi@terradue.com" },
+  { name = "Simone Vaccari", email = "simone.vaccari@terradue.com" }
 ]
 classifiers = [
   "Development Status :: 4 - Beta",
