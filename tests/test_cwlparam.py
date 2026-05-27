@@ -14,8 +14,7 @@ from click2cwl.cwlparam import CWLParam
 
 @click.command()
 @click.option("--value", type=click.Choice(["A", "B", "C"]), required=True)
-def cli_enum(**kwargs):
-    ...
+def cli_enum(**kwargs): ...
 
 
 def test_enum_dict():
@@ -27,7 +26,9 @@ def test_enum_dict():
     wf = cwl["$graph"][1]
 
     assert list(clt["inputs"]) == ["value"]
-    assert "symbols" in clt["inputs"]["value"]["type"][0]  # list is used to allow optionally having 'null'
+    assert (
+        "symbols" in clt["inputs"]["value"]["type"][0]
+    )  # list is used to allow optionally having 'null'
     assert isinstance(clt["inputs"]["value"]["type"][0]["symbols"], list), (
         "ensure symbols are a Python list, not a tuple to make it JSON serializable as array"
     )
@@ -38,7 +39,7 @@ def test_enum_dict():
                 "type": "enum",
                 "symbols": ["A", "B", "C"],
             }
-        ]
+        ],
     }
 
     assert list(wf["inputs"]) == ["value"]
@@ -46,7 +47,9 @@ def test_enum_dict():
     assert isinstance(clt["inputs"]["value"]["type"][0]["symbols"], list), (
         "ensure symbols are a Python list, not a tuple to make it JSON serializable as array"
     )
-    assert wf["inputs"]["value"] == {  # no binding here since they are in 'steps' between wf/clt
+    assert wf["inputs"][
+        "value"
+    ] == {  # no binding here since they are in 'steps' between wf/clt
         "type": [
             {
                 "type": "enum",
@@ -58,8 +61,7 @@ def test_enum_dict():
 
 @click.command()
 @click.option("--value", type=click.Choice(["A", "B", "C"]), required=True)
-def cli_enum(**kwargs):
-    ...
+def cli_enum(**kwargs): ...
 
 
 def test_enum_dict():
@@ -71,7 +73,9 @@ def test_enum_dict():
     wf = cwl["$graph"][1]
 
     assert list(clt["inputs"]) == ["value"]
-    assert "symbols" in clt["inputs"]["value"]["type"][0]  # list is used to allow optionally having 'null'
+    assert (
+        "symbols" in clt["inputs"]["value"]["type"][0]
+    )  # list is used to allow optionally having 'null'
     assert isinstance(clt["inputs"]["value"]["type"][0]["symbols"], list), (
         "ensure symbols are a Python list, not a tuple to make it JSON serializable as array"
     )
@@ -82,7 +86,7 @@ def test_enum_dict():
                 "type": "enum",
                 "symbols": ["A", "B", "C"],
             }
-        ]
+        ],
     }
 
     assert list(wf["inputs"]) == ["value"]
@@ -90,7 +94,9 @@ def test_enum_dict():
     assert isinstance(clt["inputs"]["value"]["type"][0]["symbols"], list), (
         "ensure symbols are a Python list, not a tuple to make it JSON serializable as array"
     )
-    assert wf["inputs"]["value"] == {  # no binding here since they are in 'steps' between wf/clt
+    assert wf["inputs"][
+        "value"
+    ] == {  # no binding here since they are in 'steps' between wf/clt
         "type": [
             {
                 "type": "enum",
@@ -114,7 +120,7 @@ def test_enum_dict():
         (click.Option(["--test"], type=click.Choice([1, 2])), "enum"),
         (click.Option(["--test"], type=click.Path()), "Directory"),
         (click.Option(["--test"], type=click.File()), "File"),
-    ]
+    ],
 )
 def test_param_mapping(click_type, cwl_type):
     param = CWLParam(click_type)
