@@ -27,8 +27,7 @@ class CwlCreator:
             ):
                 self.set_clt_inputs(
                     {
-                        "inp"
-                        + str(i + 1): {
+                        "inp" + str(i + 1): {
                             "inputBinding": {
                                 "position": i + 1,
                                 "prefix": "--" + str(self.command_names[i]),
@@ -45,8 +44,7 @@ class CwlCreator:
             ):
                 self.set_clt_inputs(
                     {
-                        "inp"
-                        + str(i + 1): {
+                        "inp" + str(i + 1): {
                             "inputBinding": {
                                 "position": i + 1,
                                 "prefix": "--" + str(self.command_names[i]),
@@ -62,8 +60,7 @@ class CwlCreator:
             else:
                 self.set_clt_inputs(
                     {
-                        "inp"
-                        + str(i + 1): {
+                        "inp" + str(i + 1): {
                             "inputBinding": {
                                 "position": i + 1,
                                 "prefix": "--" + str(self.command_names[i]),

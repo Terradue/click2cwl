@@ -4,7 +4,6 @@ from collections import OrderedDict
 
 class Workflow:
     def __init__(self, click2cwl):
-
         self._wf_class = dict()
 
         self.click2cwl = click2cwl
@@ -27,7 +26,6 @@ class Workflow:
         self._step_inputs = OrderedDict()
 
         for index, param in enumerate(self.click2cwl.params):
-
             if param.name == self.click2cwl.get_scatter_param():
                 cwl_param = CWLParam(param, scatter=True)
             else:
@@ -38,7 +36,6 @@ class Workflow:
             self._step_inputs[cwl_param.name] = cwl_param.name
 
         if self.click2cwl.get_scatter_param() is not None:
-
             self._wf_class["outputs"] = [
                 {
                     "id": "wf_outputs",
@@ -60,7 +57,6 @@ class Workflow:
             }
 
         else:
-
             self._wf_class["outputs"] = [
                 {
                     "id": "wf_outputs",
@@ -74,5 +70,4 @@ class Workflow:
             }
 
     def to_dict(self):
-
         return self._wf_class

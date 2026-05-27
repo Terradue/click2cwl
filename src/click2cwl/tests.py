@@ -2,6 +2,7 @@ import sys
 import click
 from .entry import dump
 
+
 # test1 -i a --dump cwl --requirement ramMax=1 --requirement ramMin=2 --docker aaa  --env a=1 --env b=2
 @click.command(
     short_help="hello Im the label of Workflow class",
@@ -55,7 +56,6 @@ from .entry import dump
 )
 @click.pass_context
 def test1(ctx, **kwargs):
-
     dump(ctx)
 
     print("business as usual")
@@ -87,7 +87,6 @@ def test1(ctx, **kwargs):
 )
 @click.pass_context
 def test2(ctx, input_reference, aoi):
-
     dump(ctx)
 
     print("business as usual")

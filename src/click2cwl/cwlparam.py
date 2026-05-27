@@ -25,7 +25,6 @@ class CWLParam(object):
         binding = {"position": position, **prefix}
 
         if self.input_type == "enum":
-
             if self.required:
                 clt_input = {
                     "type": [{
@@ -36,7 +35,6 @@ class CWLParam(object):
                 }
 
             else:
-
                 clt_input = {
                     "type": [
                         "null",
@@ -46,11 +44,8 @@ class CWLParam(object):
                 }
 
         else:
-
             if self.multiple:
-
                 if self.required:
-
                     clt_input = {
                         "type": {
                             "type": "array",
@@ -59,7 +54,6 @@ class CWLParam(object):
                         }
                     }
                 else:
-
                     clt_input = {
                         "type": [
                             "null",
@@ -72,7 +66,6 @@ class CWLParam(object):
                     }
 
             else:
-
                 clt_input = {
                     "type": self.get_type(extended=True),
                     "inputBinding": binding,
@@ -85,9 +78,7 @@ class CWLParam(object):
         help_info = {"label": self.help, "doc": self.help} if self.help else {}
 
         if self.input_type == "enum":
-
             if self.required:
-
                 workflow_param = {
                     "type": [{
                         "type": self.input_type,
@@ -97,7 +88,6 @@ class CWLParam(object):
                 }
 
             else:
-
                 workflow_param = {
                     "type": [
                         "null",
@@ -107,7 +97,6 @@ class CWLParam(object):
                 }
 
         else:
-
             workflow_param = {
                 "type": self.get_type(extended=True),
                 **help_info,
@@ -119,24 +108,19 @@ class CWLParam(object):
         return workflow_param
 
     def to_param(self):
-
         if self.input_type in ["Directory", "File"]:
-
             param = {
                 "class": self.input_type,
                 "path": "<value>" if self.default is None else self.default,
             }
 
         else:
-
             param = "<value>" if self.default is None else self.default
 
         if self._option.multiple:
-
             return [param]
 
         else:
-
             return param
 
     def get_type(self, extended=False):
@@ -173,17 +157,13 @@ class CWLParam(object):
                 cwl_type = "File"
 
         if self.scatter:
-
             return f"{cwl_type}[]"
 
         if extended:
-
             if self._option.multiple:
-
                 cwl_type = f"{cwl_type}[]"
 
             if not self._option.required:
-
                 cwl_type = f"{cwl_type}?"
 
         return cwl_type

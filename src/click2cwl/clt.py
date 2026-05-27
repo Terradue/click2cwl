@@ -5,14 +5,12 @@ from collections import OrderedDict
 
 class CommandLineTool:
     def __init__(self, click2cwl):
-
         self._clt_class = dict()
         self.click2cwl = click2cwl
 
         self._clt_class["id"] = "clt"
 
         if self.click2cwl.get_docker() is not None:
-
             self._clt_class["hints"] = {
                 "DockerRequirement": {"dockerPull": self.click2cwl.get_docker()}
             }
@@ -44,7 +42,6 @@ class CommandLineTool:
         self._clt_class["inputs"] = OrderedDict()
 
         for index, param in enumerate(self.click2cwl.params):
-
             cwl_param = CWLParam(param)
 
             self._clt_class["inputs"][cwl_param.name] = cwl_param.to_clt_input(
@@ -52,5 +49,4 @@ class CommandLineTool:
             )
 
     def to_dict(self):
-
         return self._clt_class
