@@ -36,7 +36,7 @@ dependencies:
 
 ## Usage
 
-First import the click2cwl `dump` function with:
+First import the `click2cwl.dump` function with:
 
 ```python
 from click2cwl import dump
@@ -83,7 +83,30 @@ The `@click.option` decorator must:
     multiple=False,
     required=True,
 )
+def cli(): ...
 ```
+
+### @click.argument
+
+The `@click.argument` decorator must:
+
+- define the argument type (same types as for `@click.option`)
+- must OMIT the `help` (this is a limitation of `click`, see https://github.com/pallets/click/issues/587)
+- it will be automatically marked as `required=True`
+
+```python
+@click.argument(
+    "input_path",
+    type=click.Path(),
+)
+def cli(): ...
+```
+
+The advantage of using `@click.argument` over `@click.option` is that it will correspond to a positional argument,
+for cases where to option flag applies (i.e.: ``--<some-option>``). However, it comes with limitations in terms of
+additional parameters offered by `click`.
+
+### @click2cwl.dump
 
 Finally, invoke the `dump` function in your Click decorated function with:
 
@@ -93,7 +116,7 @@ Finally, invoke the `dump` function in your Click decorated function with:
 @click.pass_context
 def main(ctx, **kwargs):
 
-    dump(ctx)
+    click2cwl.dump(ctx)
 
     print("business as usual")
     print(kwargs)
@@ -103,6 +126,21 @@ if __name__ == '__main__':
 ```
 
 **Note:** See the examples folder to discover typical use cases.
+
+
+### CWL Exporters
+
+There are multiple exporters to deal with the various contents:
+
+- `click2cwl.clt.CLTExport`: CWL CommandLineTool directly
+- `click2cwl.cwlexport.CWLExport`: CWL Workflows and its underlying CommandLineTool
+- `click2cwl.paramexport.ParamExport`: CWL Job Parameters
+
+These can be invoked directly instead of the [`@click2cwl.dump`](#click2cwldump) 
+operation to extract the contents separately from the CLI invocation.
+
+
+## Building the application
 
 Build your application with:
 

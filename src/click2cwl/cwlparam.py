@@ -1,39 +1,46 @@
 import click
+from typing import Union
+
+AnyParameter = Union[click.Option, click.Argument, click.Parameter]
 
 
 class CWLParam(object):
-    def __init__(self, click_option, scatter=False):
+    def __init__(self, click_option: AnyParameter, scatter: bool = False) -> None:
+
         self._option = click_option
 
         self.name = self._option.name
         self.opt = self._option.opts[0]
         self.multiple = self._option.multiple
         self.required = self._option.required
-        self.help = self._option.help
+        # help only available in 'Option' (https://github.com/pallets/click/issues/587)
+        self.help = getattr(self._option, "help", None)
         self.scatter = scatter
         self.input_type = self.get_type()
         self.default = self._option.default
 
     def to_clt_input(self, position):
+
+        prefix = {"prefix": self.opt} if isinstance(self._option, click.Option) else {}
+        binding = {"position": position, **prefix}
+
         if self.input_type == "enum":
             if self.required:
                 clt_input = {
-                    "type": [
-                        {
-                            "type": self.input_type,
-                            "symbols": self._option.type.choices,
-                        }
-                    ],
-                    "inputBinding": {"position": position, "prefix": self.opt},
+                    "type": [{
+                        "type": self.input_type,
+                        "symbols": list(self._option.type.choices),
+                    }],
+                    "inputBinding": binding,
                 }
 
             else:
                 clt_input = {
                     "type": [
                         "null",
-                        {"type": self.input_type, "symbols": self._option.type.choices},
+                        {"type": self.input_type, "symbols": list(self._option.type.choices)},
                     ],
-                    "inputBinding": {"position": position, "prefix": self.opt},
+                    "inputBinding": binding,
                 }
 
         else:
@@ -43,7 +50,7 @@ class CWLParam(object):
                         "type": {
                             "type": "array",
                             "items": self.get_type(),
-                            "inputBinding": {"position": position, "prefix": self.opt},
+                            "inputBinding": binding,
                         }
                     }
                 else:
@@ -53,10 +60,7 @@ class CWLParam(object):
                             {
                                 "type": "array",
                                 "items": self.get_type(),
-                                "inputBinding": {
-                                    "position": position,
-                                    "prefix": self.opt,
-                                },
+                                "inputBinding": binding,
                             },
                         ]
                     }
@@ -64,40 +68,38 @@ class CWLParam(object):
             else:
                 clt_input = {
                     "type": self.get_type(extended=True),
-                    "inputBinding": {"position": position, "prefix": self.opt},
+                    "inputBinding": binding,
                 }
 
         return clt_input
 
     def to_workflow_param(self):
+
+        help_info = {"label": self.help, "doc": self.help} if self.help else {}
+
         if self.input_type == "enum":
             if self.required:
                 workflow_param = {
-                    "type": [
-                        {
-                            "type": self.input_type,
-                            "symbols": self._option.type.choices,
-                        }
-                    ],
-                    "label": self.help,
-                    "doc": self.help,
+                    "type": [{
+                        "type": self.input_type,
+                        "symbols": list(self._option.type.choices),
+                    }],
+                    **help_info,
                 }
 
             else:
                 workflow_param = {
                     "type": [
                         "null",
-                        {"type": self.input_type, "symbols": self._option.type.choices},
+                        {"type": self.input_type, "symbols": list(self._option.type.choices)},
                     ],
-                    "label": self.help,
-                    "doc": self.help,
+                    **help_info,
                 }
 
         else:
             workflow_param = {
                 "type": self.get_type(extended=True),
-                "label": self.help,
-                "doc": self.help,
+                **help_info,
             }
 
         if self.default is not None:
@@ -122,17 +124,37 @@ class CWLParam(object):
             return param
 
     def get_type(self, extended=False):
-        cwl_type = None
 
-        cwl_types = {}
+        # https://www.commonwl.org/v1.2/CommandLineTool.html#CWLType
+        # https://click.palletsprojects.com/en/stable/parameter-types/
+        # https://click.palletsprojects.com/en/stable/api/#click-api-types
+        cwl_types = {
+            click.types.Path: "Directory",
+            click.types.File: "File",
+            click.types.StringParamType: "string",
+            click.types.DateTime: "string",
+            click.types.UUIDParameterType: "string",
+            click.types.UnprocessedParamType: "string",
+            click.types.Choice: "enum",
+            click.types.BoolParamType: "boolean",
+            click.types.IntParamType: "int",
+            click.types.IntRange: "int",
+            click.types.FloatParamType: "float",
+            click.types.FloatRange: "float",
+        }
 
-        cwl_types[click.types.Path] = "Directory"
-        cwl_types[click.types.File] = "File"
-        cwl_types[click.types.StringParamType] = "string"
-        cwl_types[click.types.Choice] = "enum"
-        cwl_types[click.types.BoolParamType] = "boolean"
+        option_type = type(self._option.type)
+        cwl_type = cwl_types.get(option_type)
 
-        cwl_type = cwl_types.get(type(self._option.type))
+        if cwl_type is None:
+            raise TypeError(
+                f"Unknown CWL type mapping from Click parameter type: [{option_type}]. "
+                f"Only the following Click parameter types are supported: {list(cwl_types)}"
+            )
+
+        if option_type is click.types.Path:
+            if not self._option.type.dir_okay:
+                cwl_type = "File"
 
         if self.scatter:
             return f"{cwl_type}[]"

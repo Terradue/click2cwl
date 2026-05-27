@@ -21,6 +21,8 @@ owscontext.xml
 docker-build
 *.ipynb
 .vscode
+.idea
+.run
 catalog.json
 
 # Byte-compiled / optimized / DLL files
