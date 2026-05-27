@@ -6,7 +6,6 @@ AnyParameter = Union[click.Option, click.Argument, click.Parameter]
 
 class CWLParam(object):
     def __init__(self, click_option: AnyParameter, scatter: bool = False) -> None:
-
         self._option = click_option
 
         self.name = self._option.name
@@ -20,17 +19,18 @@ class CWLParam(object):
         self.default = self._option.default
 
     def to_clt_input(self, position):
-
         prefix = {"prefix": self.opt} if isinstance(self._option, click.Option) else {}
         binding = {"position": position, **prefix}
 
         if self.input_type == "enum":
             if self.required:
                 clt_input = {
-                    "type": [{
-                        "type": self.input_type,
-                        "symbols": list(self._option.type.choices),
-                    }],
+                    "type": [
+                        {
+                            "type": self.input_type,
+                            "symbols": list(self._option.type.choices),
+                        }
+                    ],
                     "inputBinding": binding,
                 }
 
@@ -38,7 +38,10 @@ class CWLParam(object):
                 clt_input = {
                     "type": [
                         "null",
-                        {"type": self.input_type, "symbols": list(self._option.type.choices)},
+                        {
+                            "type": self.input_type,
+                            "symbols": list(self._option.type.choices),
+                        },
                     ],
                     "inputBinding": binding,
                 }
@@ -74,16 +77,17 @@ class CWLParam(object):
         return clt_input
 
     def to_workflow_param(self):
-
         help_info = {"label": self.help, "doc": self.help} if self.help else {}
 
         if self.input_type == "enum":
             if self.required:
                 workflow_param = {
-                    "type": [{
-                        "type": self.input_type,
-                        "symbols": list(self._option.type.choices),
-                    }],
+                    "type": [
+                        {
+                            "type": self.input_type,
+                            "symbols": list(self._option.type.choices),
+                        }
+                    ],
                     **help_info,
                 }
 
@@ -91,7 +95,10 @@ class CWLParam(object):
                 workflow_param = {
                     "type": [
                         "null",
-                        {"type": self.input_type, "symbols": list(self._option.type.choices)},
+                        {
+                            "type": self.input_type,
+                            "symbols": list(self._option.type.choices),
+                        },
                     ],
                     **help_info,
                 }
@@ -124,7 +131,6 @@ class CWLParam(object):
             return param
 
     def get_type(self, extended=False):
-
         # https://www.commonwl.org/v1.2/CommandLineTool.html#CWLType
         # https://click.palletsprojects.com/en/stable/parameter-types/
         # https://click.palletsprojects.com/en/stable/api/#click-api-types
