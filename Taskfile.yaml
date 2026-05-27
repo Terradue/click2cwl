@@ -1,0 +1,11 @@
+version: '3'
+
+includes:
+  quality: https://raw.githubusercontent.com/Terradue/taskfile-utils/refs/heads/main/quality.yaml
+
+tasks:
+
+  default:
+    cmds:
+    - task: quality:test
+    - task: quality:check

@@ -16,17 +16,17 @@ authors = [
   { name = "Michele Longobardo", email = "michele.longobardo@terradue.com" },
   { name = "Blasco Brauzzi" },
   { name = "Simone Vaccari", email = "simone.vaccari@terradue.com" },
-  { name = "Farid Yusifli" }
+  { name = "Farid Yusifli" },
+  { name = "Simone Tripodi", email = "simone.tripodi@terradue.com" }
 ]
 classifiers = [
   "Development Status :: 4 - Beta",
   "Programming Language :: Python",
-  "Programming Language :: Python :: 3.7",
-  "Programming Language :: Python :: 3.8",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
@@ -57,3 +57,58 @@ dependencies = [
 "pyyaml"
 ]
 
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy==1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/click2cwl tests}"
+
+[tool.coverage.run]
+source_pkgs = ["click2cwl", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/click2cwl/__about__.py",
+]
+
+[tool.coverage.paths]
+click2cwl = ["src/click2cwl", "*/click2cwl/src/click2cwl"]
+tests = ["tests", "*/click2cwl/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
+
+[tool.hatch.envs.test]
+skip-install = false
+
+dependencies = [
+  "pytest==9.0.2",
+  "pytest-cov==7.0.0",
+]
+
+[tool.hatch.envs.test.scripts]
+test = "pytest"
+test-q = "pytest -q"
+test-cov = "pytest --cov=click2cwl --cov-report=xml --cov-report=html"
+test-show-setup = "pytest --setup-show"
+
+[[tool.hatch.envs.test.matrix]]
+python = ["3.10", "3.11", "3.12", "3.13", "3.14"]
+
+
+[tool.hatch.envs.dev]
+description = "Development environment"
+dependencies = [
+  "pytest==9.0.2",
+  "ruff==0.14.6",
+]
+
+
+[tool.hatch.envs.dev.scripts]
+lint = "ruff format src tests"
+check = "ruff check --fix src tests"
