@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "click2cwl"
-version = "0.4.0"  
+dynamic = ["version"]
 description = 'Generates CWL documents and associated parameters from a Click CLI definition'
 readme = "README.md"
 requires-python = ">=3.7"
@@ -41,6 +41,9 @@ dependencies = [
 Documentation = "https://github.com/Terradue/click2cwl#readme"
 Issues = "https://github.com/Terradue/click2cwl/issues"
 Source = "https://github.com/Terradue/click2cwl"
+
+[tool.hatch.version]
+path = "src/click2cwl/__about__.py"
 
 
 [tool.hatch.envs.default]
