@@ -8,13 +8,31 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 > Note: this changelog was reconstructed from git history. Releases without
 > local tag objects are inferred from release merge commits and version bumps.
 
-## [Unreleased]
+## [0.5.0] - 2026-05-29
 
 ### Added
 
+- Added the reconstructed project changelog.
 - Added missing Click-to-CWL type mappings for integer, float, range, date/time,
   UUID, and unprocessed string parameter types.
 - Added regression tests for the supported Click parameter type mappings.
+- Added Dependabot configuration for direct Python dependencies.
+- Added a Taskfile entry point for shared quality checks.
+- Added Hatch-managed test, development, type-checking, and coverage
+  configuration.
+
+### Changed
+
+- Switched package version metadata to Hatch dynamic versioning through
+  `src/click2cwl/__about__.py` and bumped the package to `0.5.0`.
+- Reworked the package GitHub Actions workflow into branch/PR CI and tag-based
+  PyPI publishing with tag/version validation.
+- Added Ruff format and lint checks to CI, and applied Ruff cleanups across the
+  package and tests.
+- Refreshed Python package classifiers and the Hatch test matrix for Python
+  3.10 through 3.14.
+- Limited documentation publishing to documentation-related changes.
+- Reorganized contributor metadata in the package configuration.
 
 ### Fixed
 
