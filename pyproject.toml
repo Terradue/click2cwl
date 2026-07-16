@@ -38,7 +38,7 @@ dependencies = [
 
 
 [project.urls]
-Documentation = "https://github.com/Terradue/click2cwl#readme"
+Documentation = "https://terradue.github.io/click2cwl/"
 Issues = "https://github.com/Terradue/click2cwl/issues"
 Source = "https://github.com/Terradue/click2cwl"
 
