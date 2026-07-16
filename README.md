@@ -1,5 +1,8 @@
 # Click2CWL - from a Click context to a CWL document
 
+[![PyPI - Version](https://img.shields.io/pypi/v/click2cwl.svg)](https://pypi.org/project/click2cwl)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/click2cwl.svg)](https://pypi.org/project/click2cwl)
+
 ## Rational and context
 
 EO application developers use Click to create command line tools to process EO data.
@@ -169,3 +172,7 @@ The additional args are:
 ## Try me on Binder
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Terradue/click2cwl/develop)
+
+## License
+
+[![Apache License, Version 2.0](https://img.shields.io/badge/license-Apache%20License%202.0-blue)](https://www.apache.org/licenses/LICENSE-2.0)
