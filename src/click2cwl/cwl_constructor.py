@@ -13,18 +13,20 @@
 # limitations under the License.
 
 import os
+from pathlib import Path
+
 import click
 import yaml
 
 
 class CwlCreator:
     def __init__(self, ctx, docker=None, requirements=None, env=None, scatter=False):
-        self._full_cwl_content = dict()
-        self._clt_class = dict()
-        self._workflow_class = dict()
+        self._full_cwl_content = {}
+        self._clt_class = {}
+        self._workflow_class = {}
         self._full_cwl_content["$graph"] = []
         self._full_cwl_content["cwlVersion"] = "v1.0"
-        self.command_names = [k for k in ctx.params.keys() if ctx.params[k] is not None]
+        self.command_names = [k for k in ctx.params if ctx.params[k] is not None]
         self.option_list = ctx.command.params
         self.ctx = ctx
         self.create_clt(self.ctx, docker, requirements, env)
@@ -153,7 +155,7 @@ class CwlCreator:
             "type": "Directory",
         }
 
-        input_counter = dict()
+        input_counter = {}
         for i in range(len(self.command_names)):
             input_counter["inp" + str(i + 1)] = str(self.command_names[i])
         self._workflow_class["steps"] = {
@@ -161,9 +163,9 @@ class CwlCreator:
         }
 
         if scatter is not None:
-            resource_requirements = list()
+            resource_requirements = []
             resource_requirements.append({"class": "ScatterFeatureRequirement"})
-            for key in scatter.keys():
+            for key in scatter:
                 resource_requirements.append({key: scatter[key]})
 
             self._workflow_class["requirements"] = resource_requirements
@@ -174,12 +176,11 @@ class CwlCreator:
         self._full_cwl_content["$graph"].append(self._workflow_class)
 
     def dump_cwl_file(self):
-        with open(self.ctx.command_path + ".cwl", "w") as file:
+        with Path(self.ctx.command_path + ".cwl").open("w") as file:
             yaml.dump(self._full_cwl_content, file)
-            file.close()
 
     def dump_params_file(self):
-        with open(self.ctx.command_path + ".yml", "w") as file:
+        with Path(self.ctx.command_path + ".yml").open("w") as file:
             for i in range(len(self.command_names)):
                 if "File" in self.get_input_type(self.option_list[i]):
                     yaml.dump(
@@ -196,7 +197,6 @@ class CwlCreator:
                         {self.command_names[i]: self.ctx.params[self.command_names[i]]},
                         file,
                     )
-            file.close()
 
     def dump(self, type_of_file):
         if type_of_file == "cwl":
@@ -206,28 +206,21 @@ class CwlCreator:
 
     def get_input_type(self, ctx):
         if isinstance(ctx.type, click.File):
-            if ctx.multiple and ctx.required:
-                return "File[]"
-            elif not ctx.required:
-                return "File?"
-            return "File"
-
-        if isinstance(ctx.type, click.Path):
-            if ctx.multiple and ctx.required:
-                return "Directory[]"
-            elif not ctx.required:
-                return "Directory?"
-            return "Directory"
-
-        if ctx.type == click.STRING:
-            if ctx.multiple and ctx.required:
-                return "string[]"
-            elif not ctx.required:
-                return "string?"
-            return "string"
-
-        if isinstance(ctx.type, click.Choice):
+            cwl_type = "File"
+        elif isinstance(ctx.type, click.Path):
+            cwl_type = "Directory"
+        elif ctx.type == click.STRING:
+            cwl_type = "string"
+        elif isinstance(ctx.type, click.Choice):
             return "enum"
+        else:
+            return None
+
+        if ctx.multiple and ctx.required:
+            return f"{cwl_type}[]"
+        if not ctx.required:
+            return f"{cwl_type}?"
+        return cwl_type
 
     def set_clt_inputs(self, inputs):
         if "inputs" in self._clt_class:
@@ -240,7 +233,7 @@ class CwlCreator:
         if ";" in path:
             path = os.environ["PATH"].split(";")[1]
         if "PREFIX" in os.environ:
-            path = ":".join([os.path.join(os.environ["PREFIX"], "bin"), path])
+            path = ":".join([str(Path(os.environ["PREFIX"]) / "bin"), path])
         return path
 
     def get_workflow(self):

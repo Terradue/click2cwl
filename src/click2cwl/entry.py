@@ -14,15 +14,17 @@
 
 import os
 import sys
-from .cwlexport import CWLExport
+from pathlib import Path
+
 from .cltexport import CLTExport
+from .cwlexport import CWLExport
 from .paramexport import ParamExport
 
 
 def dump(ctx):
     click2cwl = Click2CWL(ctx)
 
-    options = dict()
+    options = {}
 
     options["cwl"] = CWLExport
     options["params"] = ParamExport
@@ -37,13 +39,13 @@ def dump(ctx):
         sys.exit(0)
 
     else:
-        return None
+        return
 
 
 valid_requirements = ["coresMin", "coresMax", "ramMin", "ramMax"]
 
 
-class Click2CWL(object):
+class Click2CWL:
     def __init__(self, ctx):
         self.ctx = ctx
         self.extra_params = self._get_extra_params()
@@ -55,7 +57,7 @@ class Click2CWL(object):
         self.doc = self.ctx.command.help
 
         if not self.extra_params:
-            return None
+            return
 
         self.extra_params["env"]["PATH"] = self.get_path()
 
@@ -134,7 +136,7 @@ class Click2CWL(object):
             path = os.environ["PATH"].split(";")[1]
 
         if "PREFIX" in os.environ:
-            path = ":".join([os.path.join(os.environ["PREFIX"], "bin"), path])
+            path = ":".join([str(Path(os.environ["PREFIX"]) / "bin"), path])
 
         return path
 

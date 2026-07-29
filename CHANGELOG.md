@@ -8,6 +8,21 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 > Note: this changelog was reconstructed from git history. Releases without
 > local tag objects are inferred from release merge commits and version bumps.
 
+## Unreleased
+
+### Changed
+
+- `pyproject.toml` cleanup.
+
+### Added
+
+- Stronger code chekers with Ruff+McCabe & Bandit
+
+### Deprecated
+
+- Python `3.7`, `3.8` and `3.9` no longer supported.
+
+
 ## [0.5.0] - 2026-05-29
 
 ### Added

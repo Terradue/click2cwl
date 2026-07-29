@@ -230,3 +230,4 @@ __marimo__/
 .streamlit/secrets.toml
 
 .task
+uv.lock

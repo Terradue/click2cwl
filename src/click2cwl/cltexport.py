@@ -12,9 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import yaml
-from .clt import CommandLineTool
 from collections import OrderedDict
+from pathlib import Path
+
+import yaml
+
+from .clt import CommandLineTool
 
 
 def setup_yaml():
@@ -29,7 +32,7 @@ def setup_yaml():
 setup_yaml()
 
 
-class CLTExport(object):
+class CLTExport:
     def __init__(self, click2cwl):
         self.click2cwl = click2cwl
 
@@ -38,12 +41,11 @@ class CLTExport(object):
         self._clt_doc["cwlVersion"] = self._get_cwl_version()
 
     def _get_cwl_version(self):
-        if "cwl-version" in self.click2cwl.extra_params.keys():
+        if "cwl-version" in self.click2cwl.extra_params:
             return self.click2cwl.extra_params["cwl-version"]
-        elif "wall-time" in self.click2cwl.extra_params.keys():
+        if "wall-time" in self.click2cwl.extra_params:
             return "v1.1"
-        else:
-            return "v1.0"
+        return "v1.0"
 
     def to_dict(self):
         return self._clt_doc
@@ -53,5 +55,5 @@ class CLTExport(object):
             print(yaml.dump(self._clt_doc))
 
         else:
-            with open(f"{self.click2cwl.id}.cwl", "w") as file:
+            with Path(f"{self.click2cwl.id}.cwl").open("w") as file:
                 yaml.dump(self._clt_doc, file)

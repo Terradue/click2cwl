@@ -12,13 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .cwlparam import CWLParam
 from collections import OrderedDict
+
+from .cwlparam import CWLParam
 
 
 class Workflow:
     def __init__(self, click2cwl):
-        self._wf_class = dict()
+        self._wf_class = {}
 
         self.click2cwl = click2cwl
 
@@ -39,7 +40,7 @@ class Workflow:
         self._wf_class["inputs"] = OrderedDict()
         self._step_inputs = OrderedDict()
 
-        for index, param in enumerate(self.click2cwl.params):
+        for _index, param in enumerate(self.click2cwl.params):
             if param.name == self.click2cwl.get_scatter_param():
                 cwl_param = CWLParam(param, scatter=True)
             else:

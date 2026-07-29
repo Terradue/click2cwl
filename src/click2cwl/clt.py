@@ -12,13 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .cwlparam import CWLParam
 from collections import OrderedDict
+
+from .cwlparam import CWLParam
 
 
 class CommandLineTool:
     def __init__(self, click2cwl):
-        self._clt_class = dict()
+        self._clt_class = {}
         self.click2cwl = click2cwl
 
         self._clt_class["id"] = "clt"
@@ -47,7 +48,7 @@ class CommandLineTool:
             "EnvVarRequirement": {"envDef": env_vars},
         }
 
-        if "wall-time" in self.click2cwl.extra_params.keys():
+        if "wall-time" in self.click2cwl.extra_params:
             self._clt_class["requirements"]["ToolTimeLimit"] = {
                 "timelimit": self.click2cwl.extra_params["wall-time"]
             }

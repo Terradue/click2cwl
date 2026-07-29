@@ -12,16 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from pathlib import Path
+
 import yaml
+
 from .cwlparam import CWLParam
 
 
-class ParamExport(object):
+class ParamExport:
     def __init__(self, click2cwl):
-        self._params = dict()
+        self._params = {}
         self.click2cwl = click2cwl
 
-        for index, param in enumerate(self.click2cwl.params):
+        for _index, param in enumerate(self.click2cwl.params):
             cwl_param = CWLParam(param)
 
             self._params[cwl_param.name] = cwl_param.to_param()
@@ -34,5 +37,5 @@ class ParamExport(object):
             print(yaml.dump(self._params))
 
         else:
-            with open(f"{self.click2cwl.id}.cwl", "w") as file:
+            with Path(f"{self.click2cwl.id}.cwl").open("w") as file:
                 yaml.dump(self._params, file)

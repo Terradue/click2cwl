@@ -13,7 +13,9 @@
 # limitations under the License.
 
 import sys
+
 import click
+
 from .entry import dump
 
 
@@ -21,10 +23,10 @@ from .entry import dump
 @click.command(
     short_help="hello Im the label of Workflow class",
     help="hello Im the doc of Workflow class",
-    context_settings=dict(
-        ignore_unknown_options=True,
-        allow_extra_args=True,
-    ),
+    context_settings={
+        "ignore_unknown_options": True,
+        "allow_extra_args": True,
+    },
 )
 @click.option(
     "--input_reference",
@@ -79,10 +81,10 @@ def test1(ctx, **kwargs):
 
 
 @click.command(
-    context_settings=dict(
-        ignore_unknown_options=True,
-        allow_extra_args=True,
-    )
+    context_settings={
+        "ignore_unknown_options": True,
+        "allow_extra_args": True,
+    }
 )
 @click.option(
     "--input_reference",

@@ -1,10 +1,9 @@
 import click
-from typing import Union
 
-AnyParameter = Union[click.Option, click.Argument, click.Parameter]
+AnyParameter = click.Option | click.Argument | click.Parameter
 
 
-class CWLParam(object):
+class CWLParam:
     def __init__(self, click_option: AnyParameter, scatter: bool = False) -> None:
         self._option = click_option
 
@@ -130,8 +129,7 @@ class CWLParam(object):
         if self._option.multiple:
             return [param]
 
-        else:
-            return param
+        return param
 
     def get_type(self, extended=False):
         # https://www.commonwl.org/v1.2/CommandLineTool.html#CWLType
@@ -161,9 +159,8 @@ class CWLParam(object):
                 f"Only the following Click parameter types are supported: {list(cwl_types)}"
             )
 
-        if option_type is click.types.Path:
-            if not self._option.type.dir_okay:
-                cwl_type = "File"
+        if option_type is click.types.Path and not self._option.type.dir_okay:
+            cwl_type = "File"
 
         if self.scatter:
             return f"{cwl_type}[]"
