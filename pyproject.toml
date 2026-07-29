@@ -97,6 +97,7 @@ python = ["3.10", "3.11", "3.12", "3.13", "3.14"]
 [tool.hatch.envs.dev]
 skip-install = false
 dependencies = [
+  "pytest==9.1.1",
   "mypy>=2.3.0",
   "ruff>=0.16.0",
   "bandit>=1.9.4",
